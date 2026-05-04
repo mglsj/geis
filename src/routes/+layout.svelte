@@ -4,20 +4,25 @@ import { toast } from "svelte-sonner";
 import { Toaster } from "$lib/components/shadcn/sonner";
 import { onMount } from "svelte";
 import { ModeWatcher } from "mode-watcher";
+import { page } from "$app/state";
 
-let { children, data } = $props();
+let { children } = $props();
 
 onMount(() => {
-	if (data.searchParams.get("toast")) {
-		toast.info(data.searchParams.get("toast")!, {
+	if (page.url.searchParams.get("toast")) {
+		toast(page.url.searchParams.get("toast")!, {
 			duration: 3000,
 		});
-		data.searchParams.delete("toast");
-		window.history.replaceState(
-			{},
-			"",
-			`${window.location.pathname}?${data.searchParams.toString()}`,
-		);
+		page.url.searchParams.delete("toast");
+		window.history.replaceState({}, "", page.url);
+	}
+
+	if (page.url.searchParams.get("error")) {
+		toast.error(page.url.searchParams.get("error")!, {
+			duration: 3000,
+		});
+		page.url.searchParams.delete("error");
+		window.history.replaceState({}, "", page.url);
 	}
 });
 </script>
@@ -26,7 +31,7 @@ onMount(() => {
 <ModeWatcher />
 <Toaster />
 
-<div class={"min-h-screen"}>
+<div class="min-h-screen">
 	{@render children()}
 </div>
 

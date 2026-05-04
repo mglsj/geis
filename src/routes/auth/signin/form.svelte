@@ -74,21 +74,25 @@ const form = superForm(defaultForm, {
 
 const { form: formData, enhance, constraints } = form;
 
-const signUpURL = getAuthURL("signup", {
-	origin: page.url.origin,
-	searchParams: {
-		callback: callbackURL,
-		email: $formData.email,
-	},
-}).toString();
+const signUpURL = $derived(
+	getAuthURL("signup", {
+		origin: page.url.origin,
+		searchParams: {
+			callback: callbackURL,
+			email: $formData.email,
+		},
+	}).toString(),
+);
 
-const forgotPasswordURL = getAuthURL("forgot-password", {
-	origin: page.url.origin,
-	searchParams: {
-		callback: callbackURL,
-		email: $formData.email,
-	},
-}).toString();
+const forgotPasswordURL = $derived(
+	getAuthURL("forgot-password", {
+		origin: page.url.origin,
+		searchParams: {
+			callback: callbackURL,
+			email: $formData.email,
+		},
+	}).toString(),
+);
 </script>
 
 <form method="POST" use:enhance class="space-y-6">

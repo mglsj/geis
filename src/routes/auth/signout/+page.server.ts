@@ -1,11 +1,11 @@
+import { getAuthURL } from "$lib/helpers/urls";
 import { auth } from "$lib/server/auth";
 import type { PageServerLoad } from "./$types";
 import { redirect } from "@sveltejs/kit";
 
-export const load: PageServerLoad = async ({ locals, url, request }) => {
+export const load: PageServerLoad = async ({ locals, request }) => {
 	if (!locals.user || !locals.session) {
-		const redirectTo = new URL("/auth/signin", url.origin);
-		throw redirect(302, redirectTo);
+		throw redirect(302, getAuthURL("signin", {}));
 	}
 
 	try {
@@ -19,5 +19,10 @@ export const load: PageServerLoad = async ({ locals, url, request }) => {
 		console.error("Error signing out:", error);
 	}
 
-	throw redirect(302, "/auth/signin?toast=Signed out successfully");
+	throw redirect(
+		302,
+		getAuthURL("signin", {
+			searchParams: { toast: "Signed out successfully" },
+		}),
+	);
 };

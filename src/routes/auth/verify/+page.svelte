@@ -1,5 +1,5 @@
 <script lang="ts">
-import { authClient } from "$lib/client/auth-client.js";
+import { authClient } from "$lib/client/auth-client";
 import { Button } from "$lib/components/shadcn/button";
 import * as Card from "$lib/components/shadcn/card";
 import { onMount } from "svelte";

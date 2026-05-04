@@ -1,7 +1,7 @@
 <script lang="ts">
-import Button from "$lib/components/shadcn/button/button.svelte";
+import { Button } from "$lib/components/shadcn/button";
 import * as Card from "$lib/components/shadcn/card";
-import SignInForm from "./form.svelte";
+import SignInForm from "./Form.svelte";
 import { RiKeyLine } from "remixicon-svelte";
 
 let { data } = $props();

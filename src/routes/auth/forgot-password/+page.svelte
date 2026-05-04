@@ -1,8 +1,8 @@
 <script lang="ts">
 import * as Card from "$lib/components/shadcn/card";
-import SignUpForm from "./Form.svelte";
+import ForgotPasswordForm from "./Form.svelte";
 
-const { data } = $props();
+let { data } = $props();
 
 const form = data.form;
 const callbackURL = data.callback.toString();
@@ -10,10 +10,11 @@ const callbackURL = data.callback.toString();
 
 <Card.Root class=" w-sm max-w-sm">
   <Card.Header>
-    <Card.Title>Sign Up</Card.Title>
-    <Card.Description>Create an account to get started.</Card.Description>
+    <Card.Title>Forgot Password</Card.Title>
+    <Card.Description>Enter your email to reset your password.</Card.Description>
   </Card.Header>
+
   <Card.Content>
-    <SignUpForm {form} {callbackURL} />
+    <ForgotPasswordForm {form} {callbackURL}/>
  </Card.Content>
 </Card.Root>

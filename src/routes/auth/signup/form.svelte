@@ -66,13 +66,15 @@ const form = superForm(defaultForm, {
 
 const { form: formData, enhance, constraints } = form;
 
-const signInURL = getAuthURL("signin", {
-	origin: page.url.origin,
-	searchParams: {
-		callback: callbackURL,
-		email: $formData.email,
-	},
-}).toString();
+const signInURL = $derived(
+	getAuthURL("signin", {
+		origin: page.url.origin,
+		searchParams: {
+			callback: callbackURL,
+			email: $formData.email,
+		},
+	}).toString(),
+);
 </script>
 
 <form method="POST" use:enhance class="space-y-6">

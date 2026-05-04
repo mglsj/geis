@@ -1,4 +1,10 @@
-type AuthPage = "signin" | "signup" | "verify" | "forgot-password";
+type AuthPage =
+	| "signin"
+	| "signup"
+	| "signout"
+	| "verify"
+	| "forgot-password"
+	| "reset-password";
 
 export function getAuthURL(
 	page: AuthPage,

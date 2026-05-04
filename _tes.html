@@ -1,0 +1,238 @@
+<script src="/js/jquery.js"></script>
+
+<head>
+  <link id="lnkmanifest" rel="manifest" />
+  <title>Graphic Era Hill University | ERP | Cyborg-ERP</title>
+
+  <meta name="keywords" content="" />
+
+  <meta property="og:title" content="Best University | College | Schools ERP in India - Cyborg-ERP" />
+  <meta property="og:description" content="" />
+  <meta property="og:keywords" content="" />
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+  <link id="srcicon" href="#" rel="shortcut icon" type="image/x-icon" />
+
+  <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+  <script src="/js/demo-rtl.js"></script>
+  <link href="/css/libs/font-awesome.css" rel="stylesheet" />
+  <link href="/css/libs/nanoscroller.css" rel="stylesheet" />
+
+  <link href="/css/compiled/theme_styles.css" rel="stylesheet" />
+  <link
+    href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,300|Titillium+Web:200,300,400"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <script src="/Scripts/jquery-1.12.4.js"></script>
+  <style type="text/css">
+    #eyes {
+      position: absolute;
+      right: 5%;
+      top: 33%;
+      z-index: 1000;
+      cursor: pointer;
+    }
+
+    #eyes i {
+      font-size: 15px;
+    }
+
+    .validation-summary-errors {
+      color: red;
+    }
+  </style>
+</head>
+
+<script>
+  var captchaUrl = "/Account/showrefreshcaptchaImage";
+  var captchaUrl2 = "/Account/showrefreshcaptchaImage";
+</script>
+
+<script src="/ProjectJS/Account/unauthorise.js"></script>
+
+<form action="/" method="post">
+  <input id="hdnMsg" name="hdnMsg" type="hidden" value="GEU" />
+  <input
+    id="checkOnline"
+    name="checkOnline"
+    type="hidden"
+    value="0"
+  />
+  <input
+    name="__RequestVerificationToken"
+    type="hidden"
+    value="d1XovC8li0gGcB8PjCNeCBLEn7X6wGYCrQZsZ5oU7L94e51r9cMiM6la-4kHPmSs2WVWdIu8-WCk5BKUetTQ-XC589x0RYgd5Jg5L9Zx_HA1"
+  />
+  <div id="login-full-wrapper">
+    <div class="container">
+      <div hidden="hidden">
+        <iframe src=""></iframe>
+      </div>
+      <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+          <div id="login-box" style="zoom: 90%">
+            <div id="login-box-holder" style="float: right">
+              <div class="row">
+                <div class="col-xs-12">
+                  <header id="login-header">
+                    <div id="login-logo">
+                      <img id="imgclient" src="/Account/showClientLoginPageLogo" alt="" />
+                    </div>
+                  </header>
+                  <div id="login-box-inner" style="background-color: rgba(128, 128, 128, 0.35)">
+                    <form role="form" action="index.html">
+                      <p hidden="hidden">
+                        Cyborg-ERP | Best University ERP | College ERP | School ERP in India | LMS | ERP for Higher
+                        Education | OutCome Based Education Software | Learning OutCome Software | Academic Management |
+                        Student Information
+                      </p>
+                      <b style="font-size: 12px"></b>
+
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user" style="color: white"></i></span>
+                        <input
+                          autocomplete="off"
+                          class="form-control"
+                          data-val="true"
+                          data-val-required="The User name field is required."
+                          id="enterusername"
+                          name="UserName"
+                          placeholder="User ID"
+                          style="font-size: 12px; font-weight: 500"
+                          type="text"
+                          value=""
+                        />
+                      </div>
+                      <b style="color: red">
+                        <span
+                          class="field-validation-valid"
+                          data-valmsg-for="UserName"
+                          data-valmsg-replace="true"
+                        ></span
+                      ></b>
+
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                        <input
+                          autocomplete="off"
+                          class="form-control"
+                          data-val="true"
+                          data-val-required="The Password field is required."
+                          id="enterpassword"
+                          name="Password"
+                          placeholder="Password"
+                          style="font-size: 12px; font-weight: 500"
+                          type="password"
+                        />
+                        <span id="eyes"><i class="fa fa-eye-slash" aria-hidden="true"></i></span>
+                      </div>
+                      <input value="" id="hdnID" name="clientIP" type="hidden" value="" />
+                      <b style="color: red"
+                        ><span
+                          class="field-validation-valid"
+                          data-valmsg-for="Password"
+                          data-valmsg-replace="true"
+                        ></span
+                      ></b>
+                      <div class="input-group">
+                        <span class="input-group-addon"
+                          ><i
+                            title="Click to load new captcha"
+                            style="color: lightgreen; cursor: pointer"
+                            class="fa fa-refresh fa-2x"
+                            id="btnRefreshCaptcha"
+                          ></i
+                        ></span>
+                        <center>
+                          <img id="imgPhoto" style="width: 250px; height: 40px; border: groove thin #ccc" alt="" />
+                        </center>
+                      </div>
+                      <div class="input-group">
+                        <input
+                          autocomplete="off"
+                          class="captcha form-control text-center"
+                          data-val="true"
+                          data-val-required="The Captcha field is required."
+                          id="entercaptcha"
+                          name="captcha"
+                          placeholder="Enter Captcha"
+                          style="font-size: 15px; font-weight: 500; height: 40px; width: 300px"
+                          type="text"
+                          value=""
+                        />
+                        <input type="hidden" id="HumanTypedFlag" name="HumanTypedFlag" value="0" />
+                      </div>
+                      <b style="color: red"
+                        ><span
+                          class="field-validation-valid"
+                          data-valmsg-for="captcha"
+                          data-valmsg-replace="true"
+                        ></span
+                      ></b>
+                      <br />
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <button type="submit" class="btn btn-primary col-xs-12 btnSubmit">Login</button>
+                        </div>
+                      </div>
+                      <div id="remember-me-wrapper">
+                        <div class="row text-right">
+                          <div class="col-sm-6 text-left"></div>
+                          <div id="dvforgotid" hidden="hidden">
+                            <div class="col-sm-6 text-right">
+                              <a
+                                href="/Account/ForgotPassword"
+                                id="login-forget-link"
+                                class="col-xs-12"
+                                style="font-size: 12px; color: white"
+                              >
+                                Forgot password ?
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row text-right">
+                          <div class="col-xs-12 text-right">
+                            <a
+                              href="/Account/ForgotID"
+                              id="login-forget-link"
+                              class="col-xs-12"
+                              style="font-size: 12px; color: white"
+                            >
+                              Forgot ID ?
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                      <hr />
+
+                      <div class="row">
+                        <div class="col-sm-12 text-center" style="color: white">
+                          Powered by <a style="color: white" href="" target="_blank">Cyborg IT Services (P) Ltd. </a>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<script src="/js/demo-skin-changer.js"></script>
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/jquery.nanoscroller.min.js"></script>
+<script src="/js/demo.js"></script>
+<script src="/js/scripts.js"></script>
+<script src="/pwa/index.js" type="module"></script>

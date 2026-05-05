@@ -3,11 +3,9 @@ import { authClient } from "$lib/client/auth-client";
 import Header from "$lib/components/ui/Header.svelte";
 import ProfileCard from "$lib/components/ui/ProfileCard.svelte";
 import * as Card from "$lib/components/shadcn/card";
-import * as Field from "$lib/components/shadcn/field";
-import { Input } from "$lib/components/shadcn/input";
-import { Textarea } from "$lib/components/shadcn/textarea";
 import * as Tabs from "$lib/components/shadcn/tabs";
-import { H1, H2, H3, Large, Lead, Muted } from "$lib/components/ui/typography";
+import { H1, H2, Muted, Small } from "$lib/components/ui/typography";
+import * as Table from "$lib/components/shadcn/table";
 import {
 	RiBookFill,
 	RiBookLine,
@@ -21,6 +19,51 @@ const session = authClient.useSession();
 const { data } = $props();
 
 let tabValue: string = $state("personal");
+
+const entries = [
+	{
+		id: "personal",
+		label: "Personal",
+		icon: RiUserLine,
+		iconFilled: RiUserFill,
+		fields: [
+			{ label: "DOB", value: data.profile?.dob },
+			{ label: "Gender", value: data.profile?.gender },
+			{ label: "Official Email", value: data.profile?.officialEmail },
+			{ label: "Personal Email", value: data.profile?.personalEmail },
+			{ label: "Mobile Number", value: data.profile?.mobile },
+			{ label: "Address", value: data.profile?.address },
+		],
+	},
+	{
+		id: "academic",
+		label: "Academic",
+		icon: RiSchoolLine,
+		iconFilled: RiSchoolFill,
+		fields: [
+			{ label: "Student ID", value: data.profile?.studentId },
+			{ label: "Roll Number", value: data.profile?.rollNumber },
+			{ label: "Enrollment Number", value: data.profile?.enrollmentNumber },
+			{ label: "ABC Account", value: data.profile?.abcAccount },
+			{ label: "College", value: data.profile?.college },
+			{ label: "University", value: data.profile?.university },
+		],
+	},
+	{
+		id: "education",
+		label: "Education",
+		icon: RiBookLine,
+		iconFilled: RiBookFill,
+		fields: [
+			{ label: "Course", value: data.profile?.course },
+			{ label: "Branch", value: data.profile?.branch },
+			{ label: "Specialization", value: data.profile?.specialization },
+			{ label: "Course Type", value: data.profile?.courseType },
+			{ label: "Semester", value: data.profile?.yearSem },
+			{ label: "Section", value: data.profile?.section },
+		],
+	},
+];
 </script>
 
 <Header/>
@@ -40,190 +83,50 @@ let tabValue: string = $state("personal");
 
     <Tabs.Root class="w-full gap-4" bind:value={tabValue}>
         <Tabs.List class="mx-auto">
-            <Tabs.Trigger value="personal" class="data-[state=active]:border-primary! data-[state=active]:text-primary!">
-                {#if tabValue === "personal"}
-                    <RiUserFill/>
-                    Personal
-                {:else}
-                    <RiUserLine />
-                    <span class="max-sm:hidden">Personal</span>
-                {/if}
-            </Tabs.Trigger>
-            <Tabs.Trigger value="academic" class="data-[state=active]:border-primary! data-[state=active]:text-primary!">
-                {#if tabValue === "academic"}
-                    <RiSchoolFill />
-                    Academic
-                {:else}
-                    <RiSchoolLine />
-                    <span class="max-sm:hidden">Academic</span>
-                {/if}
-            </Tabs.Trigger>
-            <Tabs.Trigger value="education" class="data-[state=active]:border-primary! data-[state=active]:text-primary!">
-                {#if tabValue === "education"}
-                    <RiBookFill />
-                    Education
-                {:else}
-                    <RiBookLine />
-                    <span class="max-sm:hidden">Education</span>
-                {/if}
-            </Tabs.Trigger>
+            {#each entries as entry}
+                <Tabs.Trigger value={entry.id} class="data-[state=active]:border-primary! data-[state=active]:text-primary!">
+                    {#if tabValue === entry.id}
+                        <entry.iconFilled/>
+                        {entry.label}
+                    {:else}
+                        <entry.icon />
+                        <span class="max-sm:hidden">{entry.label}</span>
+                    {/if}
+                </Tabs.Trigger>
+            {/each}
         </Tabs.List>
-           
-        <Tabs.Content value="personal">
-            <Card.Root class="w-full">
-            <Card.Header>
-                <Card.Title>
-                    <H2>Personal</H2>
-                </Card.Title>
-            </Card.Header>
-            <Card.Content>
-                <Field.Group>
-                    <Field.Field>
-                        <Field.Label>
-                            DOB
-                        </Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.dob} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>
-                            Gender
-                        </Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.gender} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>
-                            Official Email
-                        </Field.Label>
-                        <Field.Content>
-                            <Input type="email" readonly value={data.profile?.officialEmail} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>
-                            Personal Email
-                        </Field.Label>
-                        <Field.Content>
-                            <Input type="email" readonly value={data.profile?.personalEmail} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>
-                            Mobile Number
-                        </Field.Label>
-                        <Field.Content>
-                            <Input type="tel" readonly value={data.profile?.mobile} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>
-                            Address
-                        </Field.Label>
-                        <Field.Content>
-                            <Textarea readonly value={data.profile?.address} />
-                        </Field.Content>
-                    </Field.Field>
-                </Field.Group>
-            </Card.Content>
-        </Card.Root>
-        </Tabs.Content>
-
-        <Tabs.Content value="academic">
-            <Card.Root class="w-full">
-            <Card.Header>
-                <Card.Title>
-                    <H2>Academic</H2>
-                </Card.Title>
-            </Card.Header>
-            <Card.Content>
-                <Field.Group>
-                    <Field.Field>
-                        <Field.Label>Student ID</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.studentId} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>Roll Number</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.rollNumber} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>Enrollment Number</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.enrollmentNumber} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>ABC Account</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.abcAccount} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>College</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.college} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>University</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.university} />
-                        </Field.Content>
-                    </Field.Field>
-                </Field.Group>
-            </Card.Content>
-        </Card.Root>
-        </Tabs.Content>
-
-        <Tabs.Content value="education">
-            <Card.Root class="w-full">
-            <Card.Header>
-                <Card.Title>
-                    <H2>Education</H2>
-                </Card.Title>
-            </Card.Header>
-            <Card.Content>
-                <Field.Group>
-                    <Field.Field>
-                        <Field.Label>Course</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.course} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>Branch</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.branch} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>Specialization</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.specialization} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>Course Type</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.courseType} />
-                        </Field.Content>
-                    </Field.Field>
-                    <Field.Field>
-                        <Field.Label>Semester</Field.Label>
-                        <Field.Content>
-                            <Input type="text" readonly value={data.profile?.yearSem} />
-                        </Field.Content>
-                    </Field.Field>
-                </Field.Group>
-            </Card.Content>
-        </Card.Root>
-        </Tabs.Content>
+        
+        {#each entries as entry}
+            <Tabs.Content value={entry.id}>
+                <Card.Root class="w-full">
+                    <Card.Header>
+                        <Card.Title>
+                            <H2>{entry.label}</H2>
+                        </Card.Title>
+                    </Card.Header>
+                    <Card.Content>
+                        <Table.Root>
+                            <Table.Body>
+                                {#each entry.fields as field}
+                                    <Table.Row>
+                                        <Table.Cell >
+                                            <Muted>
+                                                {field.label}
+                                            </Muted>
+                                        </Table.Cell>
+                                        <Table.Cell class="whitespace-normal">
+                                            <Small>
+                                                {field.value || "-"}
+                                            </Small>
+                                        </Table.Cell>
+                                    </Table.Row>
+                                {/each}
+                            </Table.Body>
+                        </Table.Root>
+                    </Card.Content>
+                </Card.Root>
+            </Tabs.Content>
+        {/each}
     </Tabs.Root>
 
     <Muted>

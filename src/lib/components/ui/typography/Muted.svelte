@@ -3,11 +3,12 @@ import type { Snippet } from "svelte";
 
 interface Props {
 	children: Snippet<[]>;
+	class?: string;
 }
 
-const { children }: Props = $props();
+const { children, class: className }: Props = $props();
 </script>
 
-<p class="text-muted-foreground text-sm">
+<p class={`text-muted-foreground text-sm ${className}`}>
     {@render children()}
 </p>

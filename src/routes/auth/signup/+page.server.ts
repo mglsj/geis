@@ -31,6 +31,29 @@ export const actions = {
 			return fail(400, { form });
 		}
 
+		const result = await db
+			.select({
+				id: profileTable.id,
+				userId: profileTable.userId,
+			})
+			.from(profileTable)
+			.where(eq(profileTable.studentId, form.data.id));
+
+		let profileId: string | undefined;
+
+		if (result && result.length > 0) {
+			const { id, userId } = result[0];
+
+			if (userId) {
+				form.errors.id = [
+					"A user with this profile already exists. Please login instead.",
+				];
+				return fail(400, { form });
+			}
+
+			profileId = id;
+		}
+
 		const error = await login({
 			data: form.data,
 			cookies,
@@ -64,29 +87,8 @@ export const actions = {
 		const profile = await fetchProfile(cookies);
 		const avatar = await fetchAvatar(cookies);
 
-		const result1 = await db
-			.select({
-				id: profileTable.id,
-				userId: profileTable.userId,
-			})
-			.from(profileTable)
-			.where(eq(profileTable.studentId, profile.studentId));
-
-		let profileId: string = randomUUID().toString();
-
-		if (result1 && result1.length > 0) {
-			const { id, userId } = result1[0];
-
-			if (userId) {
-				form.errors.id = [
-					"A user with this profile already exists. Please login instead.",
-				];
-				return fail(400, { form });
-			}
-
-			profileId = id;
-
-			const result2 = await db
+		if (profileId) {
+			const result = await db
 				.update(profileTable)
 				.set({
 					avatar,
@@ -95,12 +97,13 @@ export const actions = {
 				})
 				.where(eq(profileTable.id, profileId));
 
-			if (!result2) {
+			if (!result) {
 				return message(form, "Failed to update profile. Please try again.", {
 					status: 500,
 				});
 			}
 		} else {
+			profileId = randomUUID().toString();
 			const result2 = await db.insert(profileTable).values({
 				id: profileId,
 				avatar,

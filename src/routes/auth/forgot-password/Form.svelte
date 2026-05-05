@@ -9,18 +9,23 @@ import {
 	superForm,
 } from "sveltekit-superforms";
 import { zod4Client } from "sveltekit-superforms/adapters";
-import { Button } from "$lib/components/shadcn/button";
 import { authClient } from "$lib/client/auth-client";
 import { toast } from "svelte-sonner";
 import { getAuthURL } from "$lib/helpers/urls";
 import { page } from "$app/state";
+import { Spinner } from "$lib/components/shadcn/spinner";
 
 interface Props {
 	form: SuperValidated<Infer<FormSchema>>;
 	callbackURL: string;
+	signInURL: string;
 }
 
-const { form: defaultForm, callbackURL }: Props = $props();
+let {
+	form: defaultForm,
+	callbackURL,
+	signInURL = $bindable(),
+}: Props = $props();
 
 const form = superForm(defaultForm, {
 	validators: zod4Client(formSchema),
@@ -53,17 +58,17 @@ const form = superForm(defaultForm, {
 	},
 });
 
-const { form: formData, enhance, constraints } = form;
+const { form: formData, enhance, constraints, submitting } = form;
 
-const signInURL = $derived(
-	getAuthURL("signin", {
+$effect(() => {
+	signInURL = getAuthURL("signin", {
 		origin: page.url.origin,
 		searchParams: {
 			callback: callbackURL,
 			email: $formData.email,
 		},
-	}).toString(),
-);
+	}).toString();
+});
 </script>
 
 <form method="POST" use:enhance class="space-y-6">
@@ -89,12 +94,12 @@ const signInURL = $derived(
     <Form.FieldErrors />
   </Form.Field>
 
-  <div class="flex flex-row justify-between">
-    <Button variant="link" size="sm" 
-      href={signInURL}
-    >
-      Go Back
-    </Button>
-    <Form.Button type="submit">Send Reset Link</Form.Button>
-  </div>
+{#if $submitting}
+    <Form.Button class="w-full" type="submit" disabled>
+		<Spinner/> Sending...
+	</Form.Button>
+{:else}
+	<Form.Button type="submit" class="w-full cursor-pointer">Send Reset Link</Form.Button>
+{/if}
+
 </form >

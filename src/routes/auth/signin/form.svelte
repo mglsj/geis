@@ -1,7 +1,12 @@
 <script lang="ts">
 import * as Form from "$lib/components/shadcn/form";
 import * as InputGroup from "$lib/components/shadcn/input-group";
-import { RiMailLine, RiLockPasswordLine } from "remixicon-svelte";
+import {
+	RiMailLine,
+	RiLockPasswordLine,
+	RiEyeOffLine,
+	RiEyeLine,
+} from "remixicon-svelte";
 import { formSchema, type FormSchema } from "./schema";
 import {
 	type SuperValidated,
@@ -15,6 +20,7 @@ import { authClient } from "$lib/client/auth-client";
 import { toast } from "svelte-sonner";
 import { getAuthURL } from "$lib/helpers/urls";
 import { page } from "$app/state";
+import { Spinner } from "$lib/components/shadcn/spinner";
 
 interface Props {
 	form: SuperValidated<Infer<FormSchema>>;
@@ -72,16 +78,7 @@ const form = superForm(defaultForm, {
 	},
 });
 
-const { form: formData, enhance, constraints } = form;
-
-const signUpURL = $derived(
-	getAuthURL("signup", {
-		origin: page.url.origin,
-		searchParams: {
-			callback: callbackURL,
-		},
-	}).toString(),
-);
+const { form: formData, enhance, constraints, submitting } = form;
 
 const forgotPasswordURL = $derived(
 	getAuthURL("forgot-password", {
@@ -92,6 +89,8 @@ const forgotPasswordURL = $derived(
 		},
 	}).toString(),
 );
+
+let passwordVisible = $state(false);
 </script>
 
 <form method="POST" use:enhance class="space-y-6">
@@ -135,11 +134,20 @@ const forgotPasswordURL = $derived(
           </InputGroup.Addon>
           <InputGroup.Input
             {...props}
-            type="password"
+            type={passwordVisible ? "text" : "password"}
             autocomplete="current-password webauthn"
             bind:value={$formData.password}
             {...$constraints.password}
         />
+		<InputGroup.Addon align="inline-end">
+            <Button class="cursor-pointer" variant="ghost" size="icon" type="button" onclick={() => (passwordVisible = !passwordVisible)}>
+              {#if passwordVisible}
+                <RiEyeOffLine   />
+              {:else}
+                <RiEyeLine   />
+              {/if}
+            </Button>
+        </InputGroup.Addon>
         </InputGroup.Root>
       {/snippet}
     </Form.Control>
@@ -149,12 +157,13 @@ const forgotPasswordURL = $derived(
     <Form.FieldErrors />
   </Form.Field>
   
-  <div class="flex flex-row justify-between">
-    <Button variant="link" size="sm" 
-      href={signUpURL}
-    >
-      Don't have an account? Sign Up
-    </Button>
-    <Form.Button type="submit">Sign In</Form.Button>
-  </div>
+
+{#if $submitting}
+    <Form.Button class="w-full" type="submit" disabled>
+		<Spinner/> Signing in...
+	</Form.Button>
+{:else}
+     <Form.Button class="w-full cursor-pointer" type="submit">Sign In</Form.Button>
+{/if}
+
 </form >

@@ -124,7 +124,7 @@ function parseStudentProfile(data: any): StudentProfile {
 		studentId: data.StudentID,
 		enrollmentNumber: data.EnrollmentNo,
 		rollNumber: data.PRollNo,
-		name: data.StudentName.trim().toTitleCase(),
+		name: data.StudentName.trim(),
 		college: data.College,
 		university: data.Univesity, // Note: "Univesity" is a typo in the original data, but we keep it for consistency
 		course: data.Course,

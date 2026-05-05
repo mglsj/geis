@@ -40,7 +40,7 @@ let tabValue: string = $state("personal");
 
     <Tabs.Root class="w-full gap-4" bind:value={tabValue}>
         <Tabs.List class="mx-auto">
-            <Tabs.Trigger value="personal">
+            <Tabs.Trigger value="personal" class="data-[state=active]:border-primary! data-[state=active]:text-primary!">
                 {#if tabValue === "personal"}
                     <RiUserFill/>
                     Personal
@@ -49,7 +49,7 @@ let tabValue: string = $state("personal");
                     <span class="max-sm:hidden">Personal</span>
                 {/if}
             </Tabs.Trigger>
-            <Tabs.Trigger value="academic">
+            <Tabs.Trigger value="academic" class="data-[state=active]:border-primary! data-[state=active]:text-primary!">
                 {#if tabValue === "academic"}
                     <RiSchoolFill />
                     Academic
@@ -58,7 +58,7 @@ let tabValue: string = $state("personal");
                     <span class="max-sm:hidden">Academic</span>
                 {/if}
             </Tabs.Trigger>
-            <Tabs.Trigger value="education">
+            <Tabs.Trigger value="education" class="data-[state=active]:border-primary! data-[state=active]:text-primary!">
                 {#if tabValue === "education"}
                     <RiBookFill />
                     Education

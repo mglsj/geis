@@ -1,7 +1,7 @@
 <script lang="ts">
 import * as Form from "$lib/components/shadcn/form";
 import * as InputGroup from "$lib/components/shadcn/input-group";
-import { RiLockPasswordLine } from "remixicon-svelte";
+import { RiEyeLine, RiEyeOffLine, RiLockPasswordLine } from "remixicon-svelte";
 import { formSchema, type FormSchema } from "./schema";
 import {
 	type SuperValidated,
@@ -14,6 +14,8 @@ import { toast } from "svelte-sonner";
 import { getAuthURL } from "$lib/helpers/urls";
 import { page } from "$app/state";
 import { goto } from "$app/navigation";
+import { Button } from "$lib/components/shadcn/button";
+import { Spinner } from "$lib/components/shadcn/spinner";
 
 interface Props {
 	form: SuperValidated<Infer<FormSchema>>;
@@ -54,7 +56,8 @@ const form = superForm(defaultForm, {
 	},
 });
 
-const { form: formData, enhance, constraints } = form;
+const { form: formData, enhance, constraints, submitting } = form;
+let passwordVisible = $state(false);
 </script>
 
 <form method="POST" use:enhance class="space-y-6">
@@ -69,11 +72,20 @@ const { form: formData, enhance, constraints } = form;
           </InputGroup.Addon>
           <InputGroup.Input
             {...props}
-            type="password"
+            type={passwordVisible ? "text" : "password"}
             autocomplete="new-password"
             bind:value={$formData.password}
             {...$constraints.password}
         />
+		<InputGroup.Addon align="inline-end">
+            <Button class="cursor-pointer" variant="ghost" size="icon" type="button" onclick={() => (passwordVisible = !passwordVisible)}>
+              {#if passwordVisible}
+                <RiEyeOffLine   />
+              {:else}
+                <RiEyeLine   />
+              {/if}
+            </Button>
+        </InputGroup.Addon>
         </InputGroup.Root>
       {/snippet}
     </Form.Control>
@@ -83,7 +95,12 @@ const { form: formData, enhance, constraints } = form;
     <Form.FieldErrors />
   </Form.Field>
   
-  <div class="flex flex-row justify-end">
-    <Form.Button type="submit">Reset Password</Form.Button>
-  </div>
+{#if $submitting}
+    <Form.Button class="w-full" type="submit" disabled>
+		<Spinner/> Resetting password...
+	</Form.Button>
+{:else}
+	<Form.Button class="w-full cursor-pointer" type="submit">Reset Password</Form.Button>
+{/if}
+
 </form >

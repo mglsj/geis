@@ -17,8 +17,6 @@ import {
 } from "sveltekit-superforms";
 import { zod4Client } from "sveltekit-superforms/adapters";
 import { Button } from "$lib/components/shadcn/button";
-import { getAuthURL } from "$lib/helpers/urls";
-import { page } from "$app/state";
 import { onMount } from "svelte";
 import { toast } from "svelte-sonner";
 import * as InputOTP from "$lib/components/shadcn/input-otp";
@@ -107,15 +105,6 @@ const form = superForm(defaultForm, {
 
 const { form: formData, enhance, errors, constraints, submitting } = form;
 
-const signInURL = $derived(
-	getAuthURL("signin", {
-		origin: page.url.origin,
-		searchParams: {
-			callback: callbackURL,
-		},
-	}).toString(),
-);
-
 let passwordVisible = $state(false);
 </script>
 
@@ -163,7 +152,7 @@ let passwordVisible = $state(false);
             {...$constraints.password}
         />
         <InputGroup.Addon align="inline-end">
-            <Button variant="ghost" size="icon" type="button" onclick={() => (passwordVisible = !passwordVisible)}>
+            <Button class="cursor-pointer" variant="ghost" size="icon" type="button" onclick={() => (passwordVisible = !passwordVisible)}>
               {#if passwordVisible}
                 <RiEyeOffLine   />
               {:else}
@@ -175,7 +164,7 @@ let passwordVisible = $state(false);
       {/snippet}
     </Form.Control>
     <Form.Description>
-      Must be your ERP password. We use this to verify your student status and fetch your name and email.
+      Must be your ERP password.
     </Form.Description>
     <Form.FieldErrors />
   </Form.Field>
@@ -202,32 +191,26 @@ let passwordVisible = $state(false);
             {/snippet}
           </InputOTP.Root>
 
-          <Button variant="ghost" size="icon" type="button" onclick={() => ($formData.captcha = "")}>
+          <Button class="cursor-pointer" variant="ghost" size="icon" type="button" onclick={() => ($formData.captcha = "")}>
               <RiDeleteBinLine />
           </Button>
         </div>
       {/snippet}
     </Form.Control>
-    <Form.Description>Enter the characters you see in the image.</Form.Description>
+    <!-- <Form.Description>Enter the characters you see in the image.</Form.Description> -->
     <Form.FieldErrors />
   </Form.Field>
   
   <input name="token" type="hidden" bind:value={$formData.token} />
-
-  <div class="flex flex-row justify-between">
-    <Button variant="link" size="sm" 
-      href={signInURL}
-    >
-      Already have an account?
-    </Button>
-    {#if $submitting}
-      <Form.Button type="submit" disabled>
+  
+  {#if $submitting}
+    <Form.Button type="submit" class="w-full cursor-progress" disabled>
         <Spinner/> Verifying...
-      </Form.Button>
-    {:else}
-      <Form.Button type="submit">
+    </Form.Button>
+  {:else}
+    <Form.Button type="submit" class="w-full cursor-pointer">
         Verify ERP
-      </Form.Button>
-    {/if}
-  </div>
+    </Form.Button>
+  {/if}
+  
 </form >

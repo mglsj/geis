@@ -26,16 +26,10 @@ import { Spinner } from "$lib/components/shadcn/spinner";
 interface Props {
 	form: SuperValidated<Infer<SignupFormSchema>>;
 	callbackURL: string;
-	back: () => void;
 	data: FormResult<ActionData> | null;
 }
 
-const {
-	form: defaultForm,
-	data = $bindable(),
-	callbackURL,
-	back,
-}: Props = $props();
+const { form: defaultForm, data = $bindable() }: Props = $props();
 
 const form = superForm(defaultForm, {
 	clearOnSubmit: "none",
@@ -66,7 +60,6 @@ const { form: formData, enhance, constraints, submitting } = form;
 
 let passwordVisible = $state(false);
 </script>
-
 
 <form method="POST" action="?/signup" use:enhance class="space-y-6">
   <Field.Field>
@@ -131,16 +124,12 @@ let passwordVisible = $state(false);
   <input name="profileId" type="hidden" bind:value={$formData.profileId} />
   <input name="callbackURL" type="hidden" bind:value={$formData.callbackURL} />
 
-  <div class="flex flex-row justify-between">
-    <Button variant="link" size="sm" onclick={back}>
-      Sign Up with a different account?
-    </Button>
-     {#if $submitting}
-      <Form.Button type="submit" disabled>
+    {#if $submitting}
+      <Form.Button type="submit" disabled class="w-full">
         <Spinner/> Signing up...
       </Form.Button>
     {:else}
-      <Form.Button type="submit">Sign Up</Form.Button>
+      <Form.Button type="submit" class="w-full cursor-pointer">Sign Up</Form.Button>
     {/if}
-  </div>
+
 </form >

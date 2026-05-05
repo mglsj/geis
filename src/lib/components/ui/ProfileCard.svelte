@@ -20,9 +20,9 @@ const { name, username, email, image }: Props = $props();
         </Avatar.Root>
     </div>
 
-    <div class="flex flex-col gap-1 justify-center items-start text-ellipsis">
-        <Large>{name}</Large>
-        <Small>{email}</Small>
-        <Muted>{username}</Muted>
+    <div class="flex min-w-0 flex-col gap-1 justify-center items-start">
+        <Large class="block w-full overflow-hidden whitespace-nowrap text-ellipsis">{name}</Large>
+        <Small class="block w-full overflow-hidden whitespace-nowrap text-ellipsis">{email}</Small>
+        <Muted class="block w-full overflow-hidden whitespace-nowrap text-ellipsis">{username}</Muted>
     </div>
 </div>

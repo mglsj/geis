@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const erpLoginFormSchema = z.object({
-	id: z.coerce.string().min(4),
+	username: z.coerce.string().min(4),
 	password: z.string().min(6),
 	captcha: z.string().length(6),
 	token: z.string().min(1),

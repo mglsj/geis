@@ -2,10 +2,10 @@
 import * as Form from "$lib/components/shadcn/form";
 import * as InputGroup from "$lib/components/shadcn/input-group";
 import {
-	RiMailLine,
 	RiLockPasswordLine,
 	RiEyeOffLine,
 	RiEyeLine,
+	RiUserLine,
 } from "remixicon-svelte";
 import { formSchema, type FormSchema } from "./schema";
 import {
@@ -25,17 +25,23 @@ import { Spinner } from "$lib/components/shadcn/spinner";
 interface Props {
 	form: SuperValidated<Infer<FormSchema>>;
 	callbackURL: string;
+	username?: string;
 }
 
-const { form: defaultForm, callbackURL }: Props = $props();
+let {
+	form: defaultForm,
+	callbackURL,
+	username = $bindable(),
+}: Props = $props();
 
 const form = superForm(defaultForm, {
 	validators: zod4Client(formSchema),
 	onSubmit: async ({ cancel }) => {
 		cancel();
-		const { data, error } = await authClient.signIn.email({
-			email: $formData.email,
+		const { data, error } = await authClient.signIn.username({
+			username: $formData.username,
 			password: $formData.password,
+			rememberMe: true,
 			callbackURL: callbackURL,
 		});
 
@@ -46,10 +52,10 @@ const form = superForm(defaultForm, {
 			console.log("Error signing in:", error);
 
 			switch (error.code) {
-				case "INVALID_EMAIL_OR_PASSWORD": {
+				case "INVALID_USERNAME_OR_PASSWORD": {
 					form.errors.set({
-						email: ["Invalid email or password"],
-						password: ["Invalid email or password"],
+						username: ["Invalid username or password"],
+						password: ["Invalid username or password"],
 					});
 					break;
 				}
@@ -58,7 +64,7 @@ const form = superForm(defaultForm, {
 						origin: page.url.origin,
 						searchParams: {
 							callback: callbackURL,
-							email: $formData.email,
+							// email: $formData.email,
 						},
 					});
 
@@ -69,11 +75,7 @@ const form = superForm(defaultForm, {
 				}
 			}
 		} else {
-			if (data.redirect && data.url) {
-				await goto(data.url);
-			} else {
-				await goto(callbackURL);
-			}
+			await goto(callbackURL);
 		}
 	},
 });
@@ -85,34 +87,38 @@ const forgotPasswordURL = $derived(
 		origin: page.url.origin,
 		searchParams: {
 			callback: callbackURL,
-			email: $formData.email,
+			// email: $formData.email,
 		},
 	}).toString(),
 );
 
 let passwordVisible = $state(false);
+
+$effect(() => {
+	username = $formData.username;
+});
 </script>
 
 <form method="POST" use:enhance class="space-y-6">
-  <Form.Field {form} name="email">
+  <Form.Field {form} name="username">
     <Form.Control>
       {#snippet children({ props })}
-        <Form.Label>Email</Form.Label>
+        <Form.Label>Student ID</Form.Label>
         <InputGroup.Root>
           <InputGroup.Addon align="inline-start">
-                <RiMailLine />
+                <RiUserLine />
           </InputGroup.Addon>
           <InputGroup.Input 
             {...props}
-            type="email"
-            autocomplete="email webauthn"
-           bind:value={$formData.email} 
-            {...$constraints.email} 
+            type="number"
+            autocomplete="username webauthn"
+           bind:value={$formData.username} 
+            {...$constraints.username} 
           />
         </InputGroup.Root>
       {/snippet}
     </Form.Control>
-    <Form.Description>Must be the university email.</Form.Description>
+    <Form.Description>Must be the university student ID.</Form.Description>
     <Form.FieldErrors />
   </Form.Field>
 
@@ -120,7 +126,7 @@ let passwordVisible = $state(false);
     <Form.Control>
       {#snippet children({ props })}
       <div class="flex items-center justify-between">
-        <Form.Label>Password</Form.Label>
+        <Form.Label>GEIS Password</Form.Label>
         <Button variant="link" 
           href={forgotPasswordURL}
           size="sm" class="ml-auto"

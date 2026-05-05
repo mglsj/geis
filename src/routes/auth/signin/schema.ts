@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const formSchema = z.object({
-	email: z.email(),
+	username: z.coerce.string(),
 	password: z.string().min(6),
 });
 

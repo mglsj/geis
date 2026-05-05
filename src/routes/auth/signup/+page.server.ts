@@ -37,7 +37,7 @@ export const actions = {
 				userId: profileTable.userId,
 			})
 			.from(profileTable)
-			.where(eq(profileTable.studentId, form.data.id));
+			.where(eq(profileTable.studentId, form.data.username));
 
 		let profileId: string | undefined;
 
@@ -45,7 +45,7 @@ export const actions = {
 			const { id, userId } = result[0];
 
 			if (userId) {
-				form.errors.id = [
+				form.errors.username = [
 					"A user with this profile already exists. Please login instead.",
 				];
 				return fail(400, { form });
@@ -72,10 +72,10 @@ export const actions = {
 					e.includes("The user name or password provided is incorrect") ||
 					e.includes("Invalid username or password")
 				) {
-					form.errors.id = [e];
+					form.errors.username = [e];
 					form.errors.password = [e];
 				} else {
-					form.errors.id = [e];
+					form.errors.username = [e];
 					form.errors.password = [e];
 					form.errors.captcha = [e];
 				}

@@ -20,7 +20,6 @@ import { Button } from "$lib/components/shadcn/button";
 import { onMount } from "svelte";
 import { toast } from "svelte-sonner";
 import * as InputOTP from "$lib/components/shadcn/input-otp";
-import { REGEXP_ONLY_DIGITS } from "bits-ui";
 import Skeleton from "$lib/components/shadcn/skeleton/skeleton.svelte";
 import { solveCaptcha } from "$lib/client/captcha";
 import type { ActionData } from "./$types";
@@ -29,10 +28,10 @@ import { Spinner } from "$lib/components/shadcn/spinner";
 interface Props {
 	form: SuperValidated<Infer<ErpLoginFormSchema>>;
 	next: (data: FormResult<ActionData>) => void;
-	callbackURL: string;
+	username: string;
 }
 
-const { form: defaultForm, callbackURL, next }: Props = $props();
+let { form: defaultForm, next, username = $bindable() }: Props = $props();
 
 let captchaImage: string = $state("");
 
@@ -106,11 +105,15 @@ const form = superForm(defaultForm, {
 const { form: formData, enhance, errors, constraints, submitting } = form;
 
 let passwordVisible = $state(false);
+
+$effect(() => {
+	username = $formData.username;
+});
 </script>
 
 <form method="POST" action="?/login" use:enhance class="space-y-6">
 
-  <Form.Field {form} name="id">
+  <Form.Field {form} name="username">
     <Form.Control>
       {#snippet children({ props })}
         <Form.Label>Student ID</Form.Label>
@@ -121,12 +124,9 @@ let passwordVisible = $state(false);
           <InputGroup.Input 
             {...props}
             type="number"
-            autocomplete="off"
-           bind:value={$formData.id} 
-            {...$constraints.id} 
-            pattern={REGEXP_ONLY_DIGITS}
-            title="Student ID must contain only digits"
-            inputmode="numeric"
+            autocomplete="username"
+            bind:value={$formData.username} 
+            {...$constraints.username} 
           />
         </InputGroup.Root>
       {/snippet}
@@ -148,6 +148,11 @@ let passwordVisible = $state(false);
             {...props}
             type={passwordVisible ? "text" : "password"}
             autocomplete="off"
+            data-1p-ignore="true"
+            data-lpignore="true" 
+            data-protonpass-ignore="true"
+            data-bwignore="true"
+            data-form-type="other"
             bind:value={$formData.password}
             {...$constraints.password}
         />
@@ -197,7 +202,6 @@ let passwordVisible = $state(false);
         </div>
       {/snippet}
     </Form.Control>
-    <!-- <Form.Description>Enter the characters you see in the image.</Form.Description> -->
     <Form.FieldErrors />
   </Form.Field>
   

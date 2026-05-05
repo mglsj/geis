@@ -84,7 +84,7 @@ export async function login({
 	secure,
 }: {
 	data: {
-		id: string;
+		username: string;
 		password: string;
 		captcha: string;
 		token: string;
@@ -110,7 +110,7 @@ export async function login({
 		formData.append("hdnMsg", "GEU");
 		formData.append("checkOnline", "0");
 		formData.append("__RequestVerificationToken", data.token);
-		formData.append("UserName", data.id);
+		formData.append("UserName", data.username);
 		formData.append("Password", data.password);
 		formData.append("clientIP", "");
 		formData.append("captcha", data.captcha);

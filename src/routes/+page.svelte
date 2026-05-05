@@ -83,7 +83,7 @@ let tabValue: string = $state("personal");
                             DOB
                         </Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.dob} />
+                            <Input type="text" readonly value={data.profile?.dob} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
@@ -91,7 +91,7 @@ let tabValue: string = $state("personal");
                             Gender
                         </Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.gender} />
+                            <Input type="text" readonly value={data.profile?.gender} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
@@ -99,7 +99,7 @@ let tabValue: string = $state("personal");
                             Official Email
                         </Field.Label>
                         <Field.Content>
-                            <Input type="email" disabled value={data.profile?.officialEmail} />
+                            <Input type="email" readonly value={data.profile?.officialEmail} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
@@ -107,7 +107,7 @@ let tabValue: string = $state("personal");
                             Personal Email
                         </Field.Label>
                         <Field.Content>
-                            <Input type="email" disabled value={data.profile?.personalEmail} />
+                            <Input type="email" readonly value={data.profile?.personalEmail} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
@@ -115,7 +115,7 @@ let tabValue: string = $state("personal");
                             Mobile Number
                         </Field.Label>
                         <Field.Content>
-                            <Input type="tel" disabled value={data.profile?.mobile} />
+                            <Input type="tel" readonly value={data.profile?.mobile} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
@@ -123,7 +123,7 @@ let tabValue: string = $state("personal");
                             Address
                         </Field.Label>
                         <Field.Content>
-                            <Textarea disabled value={data.profile?.address} />
+                            <Textarea readonly value={data.profile?.address} />
                         </Field.Content>
                     </Field.Field>
                 </Field.Group>
@@ -143,37 +143,37 @@ let tabValue: string = $state("personal");
                     <Field.Field>
                         <Field.Label>Student ID</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.studentId} />
+                            <Input type="text" readonly value={data.profile?.studentId} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
                         <Field.Label>Roll Number</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.rollNumber} />
+                            <Input type="text" readonly value={data.profile?.rollNumber} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
                         <Field.Label>Enrollment Number</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.enrollmentNumber} />
+                            <Input type="text" readonly value={data.profile?.enrollmentNumber} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
                         <Field.Label>ABC Account</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.abcAccount} />
+                            <Input type="text" readonly value={data.profile?.abcAccount} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
                         <Field.Label>College</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.college} />
+                            <Input type="text" readonly value={data.profile?.college} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
                         <Field.Label>University</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.university} />
+                            <Input type="text" readonly value={data.profile?.university} />
                         </Field.Content>
                     </Field.Field>
                 </Field.Group>
@@ -193,31 +193,31 @@ let tabValue: string = $state("personal");
                     <Field.Field>
                         <Field.Label>Course</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.course} />
+                            <Input type="text" readonly value={data.profile?.course} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
                         <Field.Label>Branch</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.branch} />
+                            <Input type="text" readonly value={data.profile?.branch} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
                         <Field.Label>Specialization</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.specialization} />
+                            <Input type="text" readonly value={data.profile?.specialization} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
                         <Field.Label>Course Type</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.courseType} />
+                            <Input type="text" readonly value={data.profile?.courseType} />
                         </Field.Content>
                     </Field.Field>
                     <Field.Field>
                         <Field.Label>Semester</Field.Label>
                         <Field.Content>
-                            <Input type="text" disabled value={data.profile?.yearSem} />
+                            <Input type="text" readonly value={data.profile?.yearSem} />
                         </Field.Content>
                     </Field.Field>
                 </Field.Group>

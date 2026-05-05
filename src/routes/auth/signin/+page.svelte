@@ -11,11 +11,14 @@ let { data } = $props();
 const form = data.form;
 const callbackURL = data.callback.toString();
 
+let username: string = $state("");
+
 const signUpURL = $derived(
 	getAuthURL("signup", {
 		origin: page.url.origin,
 		searchParams: {
 			callback: callbackURL,
+			username,
 		},
 	}).toString(),
 );
@@ -28,7 +31,7 @@ const signUpURL = $derived(
   </Card.Header>
 
   <Card.Content>
-    <SignInForm {form} {callbackURL}/>
+    <SignInForm {form} {callbackURL} bind:username/>
  </Card.Content>
 
  <Card.Footer>

@@ -26,11 +26,14 @@ function back() {
 	signupData = {};
 }
 
+let username: string = $state("");
+
 const signInURL = $derived(
 	getAuthURL("signin", {
 		origin: page.url.origin,
 		searchParams: {
 			callback: callbackURL,
+			username,
 		},
 	}).toString(),
 );
@@ -59,10 +62,10 @@ const signInURL = $derived(
   <Card.Content>
     <Tabs.Root bind:value={tab} class="w-full">
       <Tabs.Content value="erp">
-        <ErpLoginForm form={data.loginForm} {callbackURL} {next} />
+        <ErpLoginForm form={data.loginForm} {next} bind:username />
       </Tabs.Content>
       <Tabs.Content value="signup">
-        <SignUpForm form={data.signupForm} {callbackURL} bind:data={signupData}  />
+        <SignUpForm form={data.signupForm} {callbackURL} bind:data={signupData} />
       </Tabs.Content>
     </Tabs.Root>
  </Card.Content>

@@ -5,8 +5,12 @@ import { zod4 } from "sveltekit-superforms/adapters";
 
 export const load: PageLoad = async ({ url }) => {
 	const email = url.searchParams.get("email") ?? undefined;
+	const username = url.searchParams.get("username") ?? undefined;
 
 	return {
-		form: await superValidate({ email }, zod4(formSchema), { errors: false }),
+		email,
+		form: await superValidate({ username }, zod4(formSchema), {
+			errors: false,
+		}),
 	};
 };

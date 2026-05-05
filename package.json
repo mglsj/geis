@@ -53,6 +53,7 @@
 	"dependencies": {
 		"auth": "^1.6.9",
 		"cheerio": "^1.2.0",
-		"fetch-cookie": "^3.2.0"
+		"fetch-cookie": "^3.2.0",
+		"tesseract.js": "^7.0.0"
 	}
 }

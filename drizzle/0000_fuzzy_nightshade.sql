@@ -1,3 +1,33 @@
+CREATE TABLE `profile` (
+	`id` text PRIMARY KEY NOT NULL,
+	`user_id` text,
+	`synced_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,
+	`student_id` text NOT NULL,
+	`avatar` text,
+	`enrollment_number` text NOT NULL,
+	`roll_number` text NOT NULL,
+	`name` text NOT NULL,
+	`college` text NOT NULL,
+	`university` text NOT NULL,
+	`course` text NOT NULL,
+	`specialization` text NOT NULL,
+	`dob` text NOT NULL,
+	`year_sem` integer NOT NULL,
+	`gender` text NOT NULL,
+	`course_type` text NOT NULL,
+	`branch` text NOT NULL,
+	`official_email` text NOT NULL,
+	`personal_email` text NOT NULL,
+	`mobile` text NOT NULL,
+	`batch` integer NOT NULL,
+	`abc_account` text NOT NULL,
+	`address` text NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE set null
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `profile_student_id_unique` ON `profile` (`student_id`);--> statement-breakpoint
+CREATE INDEX `profile_studentId_idx` ON `profile` (`student_id`);--> statement-breakpoint
+CREATE INDEX `profile_userId_idx` ON `profile` (`user_id`);--> statement-breakpoint
 CREATE TABLE `account` (
 	`id` text PRIMARY KEY NOT NULL,
 	`account_id` text NOT NULL,
@@ -149,10 +179,13 @@ CREATE TABLE `user` (
 	`role` text,
 	`banned` integer DEFAULT false,
 	`ban_reason` text,
-	`ban_expires` integer
+	`ban_expires` integer,
+	`username` text,
+	`display_username` text
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);--> statement-breakpoint
+CREATE UNIQUE INDEX `user_username_unique` ON `user` (`username`);--> statement-breakpoint
 CREATE TABLE `verification` (
 	`id` text PRIMARY KEY NOT NULL,
 	`identifier` text NOT NULL,

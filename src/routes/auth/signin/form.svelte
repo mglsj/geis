@@ -79,7 +79,6 @@ const signUpURL = $derived(
 		origin: page.url.origin,
 		searchParams: {
 			callback: callbackURL,
-			email: $formData.email,
 		},
 	}).toString(),
 );

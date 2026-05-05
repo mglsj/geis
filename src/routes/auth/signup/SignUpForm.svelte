@@ -1,0 +1,146 @@
+<script lang="ts">
+import * as Form from "$lib/components/shadcn/form";
+import * as InputGroup from "$lib/components/shadcn/input-group";
+import {
+	RiMailLine,
+	RiLockPasswordLine,
+	RiEyeOffLine,
+	RiEyeLine,
+} from "remixicon-svelte";
+import { signupFormSchema, type SignupFormSchema } from "./schema";
+import {
+	type SuperValidated,
+	type Infer,
+	superForm,
+	type FormResult,
+} from "sveltekit-superforms";
+import * as Field from "$lib/components/shadcn/field";
+import { zod4Client } from "sveltekit-superforms/adapters";
+import { Button } from "$lib/components/shadcn/button";
+import type { ActionData } from "./$types";
+import { goto } from "$app/navigation";
+import { toast } from "svelte-sonner";
+import ProfileCard from "$lib/components/ui/ProfileCard.svelte";
+import { Spinner } from "$lib/components/shadcn/spinner";
+
+interface Props {
+	form: SuperValidated<Infer<SignupFormSchema>>;
+	callbackURL: string;
+	back: () => void;
+	data: FormResult<ActionData> | null;
+}
+
+const {
+	form: defaultForm,
+	data = $bindable(),
+	callbackURL,
+	back,
+}: Props = $props();
+
+const form = superForm(defaultForm, {
+	clearOnSubmit: "none",
+	validators: zod4Client(signupFormSchema),
+	onResult: ({ result }) => {
+		if (result.type === "redirect") {
+			goto(result.location);
+		} else if (result.type === "error") {
+			console.error("Form submission error:", result.error);
+			toast.error("An error occurred during sign up. Please try again.", {
+				duration: 3000,
+			});
+		}
+	},
+});
+
+$effect(() => {
+	const id = data?.profileId;
+	if (!id) return;
+
+	// Race condition fix
+	setTimeout(() => {
+		$formData.profileId = id;
+	}, 100);
+});
+
+const { form: formData, enhance, constraints, submitting } = form;
+
+let passwordVisible = $state(false);
+</script>
+
+
+<form method="POST" action="?/signup" use:enhance class="space-y-6">
+  <Field.Field>
+    <ProfileCard 
+        name={data?.name || "User"} 
+        username={data?.username || "username"} 
+        email={data?.email || "email"}
+        image={data?.image}
+    />
+  </Field.Field>
+
+  <Field.Field>
+    <Field.Label>Email</Field.Label>
+    <InputGroup.Root>
+      <InputGroup.Addon align="inline-start">
+        <RiMailLine />
+      </InputGroup.Addon>
+      <InputGroup.Input 
+        type="text"
+        autocomplete="off"
+        disabled
+        value={data?.email ?? ""}
+        />
+    </InputGroup.Root>
+    <Field.Description>Official university email.</Field.Description>
+  </Field.Field>
+  
+  <Form.Field {form} name="password">
+    <Form.Control>
+      {#snippet children({ props })}
+        <Form.Label>New Password</Form.Label>
+
+        <InputGroup.Root>
+          <InputGroup.Addon align="inline-start">
+                <RiLockPasswordLine />
+          </InputGroup.Addon>
+          <InputGroup.Input
+            {...props}
+            type={passwordVisible ? "text" : "password"}
+            autocomplete="new-password"
+            bind:value={$formData.password}
+            {...$constraints.password}
+        />
+        <InputGroup.Addon align="inline-end">
+            <Button variant="ghost" size="icon" type="button" onclick={() => (passwordVisible = !passwordVisible)}>
+              {#if passwordVisible}
+                <RiEyeOffLine   />
+              {:else}
+                <RiEyeLine   />
+              {/if}
+            </Button>
+        </InputGroup.Addon>
+        </InputGroup.Root>
+      {/snippet}
+    </Form.Control>
+    <Form.Description>
+      Create a new password. Must be at least 6 characters.
+    </Form.Description>
+    <Form.FieldErrors />
+  </Form.Field>
+  
+  <input name="profileId" type="hidden" bind:value={$formData.profileId} />
+  <input name="callbackURL" type="hidden" bind:value={$formData.callbackURL} />
+
+  <div class="flex flex-row justify-between">
+    <Button variant="link" size="sm" onclick={back}>
+      Sign Up with a different account?
+    </Button>
+     {#if $submitting}
+      <Form.Button type="submit" disabled>
+        <Spinner/> Signing up...
+      </Form.Button>
+    {:else}
+      <Form.Button type="submit">Sign Up</Form.Button>
+    {/if}
+  </div>
+</form >

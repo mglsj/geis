@@ -1,16 +1,15 @@
 import { betterAuth } from "better-auth/minimal";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { sveltekitCookies } from "better-auth/svelte-kit";
 import { env } from "$env/dynamic/private";
 import { getRequestEvent } from "$app/server";
 import { db } from "./db";
 import * as schema from "./db/auth.schema";
-import { jwt } from "better-auth/plugins";
+import { sendVerificationEmail } from "./emails";
+// Better Auth plugins
+import { username, lastLoginMethod, admin, jwt } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
 import { oauthProvider } from "@better-auth/oauth-provider";
-import { admin } from "better-auth/plugins";
-import { lastLoginMethod } from "better-auth/plugins";
-import { sendVerificationEmail } from "./emails";
+import { sveltekitCookies } from "better-auth/svelte-kit";
 
 export const auth = betterAuth({
 	baseURL: env.ORIGIN,
@@ -19,6 +18,11 @@ export const auth = betterAuth({
 		provider: "sqlite",
 		schema: schema,
 	}),
+	user: {
+		deleteUser: {
+			enabled: true,
+		},
+	},
 	emailAndPassword: {
 		enabled: true,
 		requireEmailVerification: true,
@@ -44,8 +48,9 @@ export const auth = betterAuth({
 	disabledPaths: ["/token"],
 	plugins: [
 		admin(),
+		username(),
 		lastLoginMethod(),
-		passkey({}),
+		passkey(),
 		jwt({
 			disableSettingJwtHeader: true,
 		}),

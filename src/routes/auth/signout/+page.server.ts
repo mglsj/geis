@@ -3,9 +3,9 @@ import { auth } from "$lib/server/auth";
 import type { PageServerLoad } from "./$types";
 import { redirect } from "@sveltejs/kit";
 
-export const load: PageServerLoad = async ({ locals, request }) => {
+export const load: PageServerLoad = async ({ locals, request, url }) => {
 	if (!locals.user || !locals.session) {
-		throw redirect(302, getAuthURL("signin", {}));
+		throw redirect(302, getAuthURL("signin", { origin: url.origin }));
 	}
 
 	try {
@@ -22,6 +22,7 @@ export const load: PageServerLoad = async ({ locals, request }) => {
 	throw redirect(
 		302,
 		getAuthURL("signin", {
+			origin: url.origin,
 			searchParams: { toast: "Signed out successfully" },
 		}),
 	);

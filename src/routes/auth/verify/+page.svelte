@@ -64,7 +64,11 @@ async function resendVerificationEmail() {
         <p class="text-sm text-muted-foreground">
            Please click the link in that email to verify your account. If you haven't received the email, please check your spam folder or try resending the verification email.
         </p>
-    
+		
+		<Button variant="link" class="w-full" href="https://outlook.cloud.microsoft/mail/" target="_blank">
+			Open Outlook ☍
+		</Button>
+
         <Button variant="outline" class="w-full" disabled={timeToNextResend > 0} onclick={resendVerificationEmail}>
             Resend Verification Email {timeToNextResend > 0 ? `(${timeToNextResend}s)` : ""}
         </Button>

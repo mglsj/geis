@@ -1,7 +1,6 @@
 <script lang="ts">
 import { authClient } from "$lib/client/auth-client";
 import Header from "$lib/components/ui/Header.svelte";
-import * as Avatar from "$lib/components/shadcn/avatar";
 import { Button } from "$lib/components/shadcn/button";
 import {
 	RiArrowLeftLine,
@@ -19,6 +18,8 @@ import {
 import * as Tabs from "$lib/components/shadcn/tabs";
 import * as Card from "$lib/components/shadcn/card";
 import ProfileUpdateForm from "./ProfileUpdateForm.svelte";
+import ProfileCard from "$lib/components/ui/ProfileCard.svelte";
+import { H1 } from "$lib/components/ui/typography";
 
 const session = authClient.useSession();
 
@@ -33,21 +34,16 @@ let tabValue: string = $state("profile");
         Back to Home
     </Button>
 
-    <h1 class="text-2xl font-bold">Profile</h1>
+    <H1>
+        Settings
+    </H1>
 
-    <div class="flex flex-row gap-4">
-        <div class="flex items-center">
-            <Avatar.Root class="w-16 h-16">
-                <Avatar.Image src={$session.data?.user.image} alt={$session.data?.user.name} />
-                <Avatar.Fallback>{$session.data?.user.name.charAt(0)}</Avatar.Fallback>
-            </Avatar.Root>
-        </div>
-
-        <div class="flex flex-col gap-1 justify-center items-start">
-            <p class="text-lg font-medium">{$session.data?.user.name}</p>
-            <p class="text-sm text-muted-foreground">{$session.data?.user.email}</p>
-        </div>
-    </div>
+    <ProfileCard 
+        name={$session.data?.user.name || "User"} 
+        username={$session.data?.user.username || "username"} 
+        email={$session.data?.user.email || "email"} 
+        image={$session.data?.user.image} 
+    />
 
     <Tabs.Root bind:value={tabValue} class="w-full gap-4">
     

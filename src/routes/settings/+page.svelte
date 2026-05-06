@@ -23,7 +23,7 @@ import { H1 } from "$lib/components/ui/typography";
 
 const session = authClient.useSession();
 
-let tabValue: string = $state("profile");
+let tabValue: string = $state("security");
 </script>
 
 <Header/>
@@ -48,14 +48,6 @@ let tabValue: string = $state("profile");
     <Tabs.Root bind:value={tabValue} class="w-full gap-4">
     
     <Tabs.List class="mx-auto">
-        <Tabs.Trigger value="profile" >
-            {#if tabValue === "profile"}
-                <RiUserFill />
-            {:else}
-                <RiUserLine />
-            {/if}
-            <span class="max-sm:hidden">Profile</span>
-        </Tabs.Trigger>
         <Tabs.Trigger value="security">
             {#if tabValue === "security"}
                 <RiShieldFill />
@@ -90,19 +82,6 @@ let tabValue: string = $state("profile");
         </Tabs.Trigger>
     </Tabs.List>
 
-    <Tabs.Content value="profile" class="mx-auto">
-        <Card.Root class="w-sm max-w-sm">
-            <Card.Header>
-                <Card.Title>Update Profile</Card.Title>
-                <Card.Description>Update your profile information.</Card.Description>
-            </Card.Header>
-            <Card.Content>
-                {#if $session.data?.user}
-                    <ProfileUpdateForm user={$session.data?.user}/>
-                {/if}
-            </Card.Content>
-        </Card.Root>
-    </Tabs.Content>
     <Tabs.Content value="security">
         <p>Security content goes here.</p>
     </Tabs.Content>

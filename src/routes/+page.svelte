@@ -20,7 +20,7 @@ const { data } = $props();
 
 let tabValue: string = $state("personal");
 
-const entries = [
+const entries = $derived([
 	{
 		id: "personal",
 		label: "Personal",
@@ -63,7 +63,7 @@ const entries = [
 			{ label: "Section", value: data.profile?.section },
 		],
 	},
-];
+]);
 </script>
 
 <Header/>

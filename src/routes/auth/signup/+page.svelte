@@ -11,7 +11,7 @@ import { Button } from "$lib/components/shadcn/button";
 
 const { data } = $props();
 
-const callbackURL = data.callback.toString();
+// const callback = data.callback.toString();
 
 let tab: "erp" | "signup" = $state("erp");
 let signupData: FormResult<ActionData> = $state({});
@@ -28,18 +28,17 @@ function back() {
 
 let username: string = $state("");
 
-const signInURL = $derived(
-	getAuthURL("signin", {
+const signInURL = $derived.by(() => {
+	const params = new URLSearchParams(page.url.searchParams);
+
+	username && params.set("username", username);
+
+	return getAuthURL("signin", {
 		origin: page.url.origin,
-		searchParams: {
-			callback: callbackURL,
-			username,
-		},
-	}).toString(),
-);
+		searchParams: params,
+	}).toString();
+});
 </script>
-
-
 
 <Card.Root class=" w-sm max-w-sm">
   <Card.Header>
@@ -65,7 +64,7 @@ const signInURL = $derived(
         <ErpLoginForm form={data.loginForm} {next} bind:username />
       </Tabs.Content>
       <Tabs.Content value="signup">
-        <SignUpForm form={data.signupForm} {callbackURL} bind:data={signupData} />
+        <SignUpForm form={data.signupForm} bind:data={signupData} />
       </Tabs.Content>
     </Tabs.Root>
  </Card.Content>

@@ -11,11 +11,18 @@ import {
 } from "../emails";
 import { attachUserToProfileHook, getProfileHook } from "./hooks";
 // Better Auth plugins
-import { username, lastLoginMethod, admin, jwt } from "better-auth/plugins";
+import {
+	username,
+	lastLoginMethod,
+	admin,
+	jwt,
+	twoFactor,
+} from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
 import { oauthProvider } from "@better-auth/oauth-provider";
 import { sveltekitCookies } from "better-auth/svelte-kit";
 import { APIError } from "better-auth";
+import { dev } from "$app/environment";
 
 export const auth = betterAuth({
 	baseURL: env.ORIGIN,
@@ -75,6 +82,7 @@ export const auth = betterAuth({
 		username(),
 		lastLoginMethod(),
 		passkey(),
+		twoFactor(),
 		jwt({
 			disableSettingJwtHeader: true,
 		}),
@@ -116,5 +124,8 @@ export const auth = betterAuth({
 				},
 			},
 		},
+	},
+	logger: {
+		level: dev ? "debug" : "warn",
 	},
 });

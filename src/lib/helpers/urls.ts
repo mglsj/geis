@@ -3,6 +3,7 @@ type AuthPage =
 	| "signup"
 	| "signout"
 	| "verify"
+	| "2fa"
 	| "forgot-password"
 	| "reset-password";
 
@@ -13,14 +14,23 @@ export function getAuthURL(
 		searchParams,
 	}: {
 		origin: string;
-		searchParams?: Record<string, string | null | undefined>;
+		searchParams?:
+			| Record<string, string | null | undefined>
+			| URLSearchParams
+			| string;
 	},
 ): URL {
 	const url = new URL(`/auth/${page}`, origin);
 	if (searchParams) {
-		Object.entries(searchParams).forEach(([key, value]) => {
-			if (value) url.searchParams.set(key, value);
-		});
+		if (typeof searchParams === "string") {
+			url.search = searchParams;
+		} else if (searchParams instanceof URLSearchParams) {
+			url.search = searchParams.toString();
+		} else {
+			Object.entries(searchParams).forEach(([key, value]) => {
+				if (value) url.searchParams.set(key, value);
+			});
+		}
 	}
 	return url;
 }

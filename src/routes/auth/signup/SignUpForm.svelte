@@ -28,7 +28,6 @@ import { page } from "$app/state";
 
 interface Props {
 	form: SuperValidated<Infer<SignupFormSchema>>;
-	callbackURL: string;
 	data: FormResult<ActionData> | null;
 }
 
@@ -44,8 +43,9 @@ const form = superForm(defaultForm, {
 		await authClient.signUp.email(
 			{
 				email: data?.email || "user@example.com",
+				name: data?.name || "User",
 				password: form.data.password,
-				profileId: form.data.profileId, // @ts-ignore
+				profileId: form.data.profileId,
 				callbackURL: form.data.callbackURL,
 			},
 			{
@@ -55,6 +55,7 @@ const form = superForm(defaultForm, {
 							origin: page.url.origin,
 							searchParams: {
 								toast: "Sign up successful! Please verify your email.",
+								email: data?.email,
 								callback: form.data.callbackURL,
 							},
 						}),

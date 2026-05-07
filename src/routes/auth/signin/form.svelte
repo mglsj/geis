@@ -24,15 +24,11 @@ import { Spinner } from "$lib/components/shadcn/spinner";
 
 interface Props {
 	form: SuperValidated<Infer<SignInFormData>>;
-	callbackURL: string;
+	callback: string;
 	username?: string;
 }
 
-let {
-	form: defaultForm,
-	callbackURL,
-	username = $bindable(),
-}: Props = $props();
+let { form: defaultForm, callback, username = $bindable() }: Props = $props();
 
 const form = superForm(defaultForm, {
 	validators: zod4Client(signInSchema),
@@ -46,11 +42,21 @@ const form = superForm(defaultForm, {
 				username: $formData.username,
 				password: $formData.password,
 				rememberMe: true,
-				callbackURL: callbackURL,
+				callbackURL: callback,
 			},
 			{
-				onSuccess: async () => {
-					await goto(callbackURL);
+				onSuccess: async (context) => {
+					console.log("Successfully signed in:", context);
+					if (context.data.twoFactorRedirect) {
+						await goto(
+							getAuthURL("2fa", {
+								origin: page.url.origin,
+								searchParams: page.url.searchParams,
+							}),
+						);
+					} else {
+						await goto(callback);
+					}
 				},
 				onError: async (error) => {
 					form.valid = false;
@@ -73,11 +79,9 @@ const form = superForm(defaultForm, {
 							const verifyEmailURL = getAuthURL("verify", {
 								origin: page.url.origin,
 								searchParams: {
-									callback: callbackURL,
+									callback: callback,
 								},
 							});
-
-							console.log("Redirecting to verify email page:", verifyEmailURL);
 
 							return goto(verifyEmailURL);
 						}
@@ -94,8 +98,7 @@ const forgotPasswordURL = $derived(
 	getAuthURL("forgot-password", {
 		origin: page.url.origin,
 		searchParams: {
-			callback: callbackURL,
-			// email: $formData.email,
+			callback: callback,
 		},
 	}).toString(),
 );

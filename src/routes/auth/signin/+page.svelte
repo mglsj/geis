@@ -9,19 +9,20 @@ import { RiKeyLine } from "remixicon-svelte";
 let { data } = $props();
 
 const form = data.form;
-const callbackURL = data.callback.toString();
+const callback = data.callback.toString();
 
 let username: string = $state("");
 
-const signUpURL = $derived(
-	getAuthURL("signup", {
+const signUpURL = $derived.by(() => {
+	const params = new URLSearchParams(page.url.searchParams);
+
+	username && params.set("username", username);
+
+	return getAuthURL("signup", {
 		origin: page.url.origin,
-		searchParams: {
-			callback: callbackURL,
-			username,
-		},
-	}).toString(),
-);
+		searchParams: params,
+	}).toString();
+});
 </script>
 
 <Card.Root class=" w-sm max-w-sm">
@@ -31,7 +32,7 @@ const signUpURL = $derived(
   </Card.Header>
 
   <Card.Content>
-    <SignInForm {form} {callbackURL} bind:username/>
+    <SignInForm {form} {callback} bind:username/>
  </Card.Content>
 
  <Card.Footer>

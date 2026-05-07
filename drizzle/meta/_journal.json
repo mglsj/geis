@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1777965185947,
-      "tag": "0000_fuzzy_nightshade",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1778143136980,
-      "tag": "0001_jazzy_arachne",
+      "when": 1778180845715,
+      "tag": "0000_premium_scalphunter",
       "breakpoints": true
     }
   ]

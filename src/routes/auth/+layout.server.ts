@@ -19,8 +19,8 @@ export const load: LayoutServerLoad = async ({ url }) => {
 	const callbackURL = url.searchParams.get("callback");
 
 	if (callbackURL && !isValidCallbackURL(callbackURL, url.origin)) {
-		url.searchParams.set("callback", "/");
-		url.searchParams.set("toast", "Invalid callback URL");
+		url.searchParams.delete("callback");
+		url.searchParams.set("error", "Invalid callback URL");
 		throw redirect(303, url);
 	}
 

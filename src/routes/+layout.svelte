@@ -35,3 +35,7 @@ onMount(() => {
 	{@render children()}
 </div>
 
+<svelte:head>
+	<title>GEIS</title>
+	<meta name="description" content="A student profile management system." />
+</svelte:head>

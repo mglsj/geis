@@ -185,7 +185,12 @@ $effect(() => {
              <Skeleton class="w-full h-[113.4px] mb-4" />
           {/if}
         <div class="w-full flex items-center justify-center">
-          <InputOTP.Root maxlength={6} {...props} bind:value={$formData.captcha} {...$constraints.captcha} >
+          <InputOTP.Root 
+            maxlength={6} 
+            {...props} 
+            bind:value={$formData.captcha} 
+            {...$constraints.captcha} 
+          >
             {#snippet children({ cells })}
               <InputOTP.Group>
                 {#each cells as cell (cell)}

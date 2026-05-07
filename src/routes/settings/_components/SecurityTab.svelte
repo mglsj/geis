@@ -1,12 +1,12 @@
 <script lang="ts">
-import { page } from "$app/state";
 import { authClient } from "$lib/client/auth-client";
-import { Button } from "$lib/components/shadcn/button";
 import * as Card from "$lib/components/shadcn/card";
 import { Skeleton } from "$lib/components/shadcn/skeleton";
-import { getAuthURL } from "$lib/helpers/urls";
-import { toast } from "svelte-sonner";
 import ChangePasswordForm from "./ChangePasswordForm.svelte";
+import H3 from "$lib/components/ui/typography/H3.svelte";
+import SetPassword from "./SetPassword.svelte";
+import { Badge } from "$lib/components/shadcn/badge";
+import TwoFactorAuth from "./2FA.svelte";
 
 async function hasPassword() {
 	const { data, error } = await authClient.listAccounts();
@@ -21,17 +21,20 @@ async function hasPassword() {
 const session = authClient.useSession();
 </script>
 
-<Card.Root class="w-sm max-w-sm mx-auto">
-    {#await hasPassword()}
+<H3>Password</H3>
+
+{#await hasPassword()}
+    <Card.Root class="w-sm max-w-sm mx-auto">
         <Card.Header>
             <Card.Title>Checking Password...</Card.Title>        
         </Card.Header>
         <Card.Content>
             <Skeleton class="w-full h-10" />
         </Card.Content>
-    {:then hasPass}
-
-        {#if hasPass}
+    </Card.Root>
+{:then hasPass}
+    {#if hasPass} 
+        <Card.Root class="w-sm max-w-sm mx-auto">
             <Card.Header>
                 <Card.Title>Change Password</Card.Title>
                 <Card.Description>
@@ -41,7 +44,26 @@ const session = authClient.useSession();
             <Card.Content>
                 <ChangePasswordForm />
             </Card.Content>
-        {:else}
+        </Card.Root>
+
+        <H3>Two-Factor Authentication</H3>
+
+        <Card.Root class="w-sm max-w-sm mx-auto">
+            <Card.Header class="flex items-center justify-between gap-2">
+                <Card.Title>Two-Factor Authentication</Card.Title>
+                <Badge
+                    variant={$session.data?.user.twoFactorEnabled ? "default" : "secondary"}
+                    class="ml-2"
+                >
+                    { $session.data?.user.twoFactorEnabled ? "Enabled" : "Disabled" }
+                </Badge>
+            </Card.Header>
+            <Card.Content>
+                <TwoFactorAuth />
+            </Card.Content>
+        </Card.Root>
+    {:else}
+        <Card.Root class="w-sm max-w-sm mx-auto">
             <Card.Header>
                 <Card.Title>Set Password</Card.Title>
                 <Card.Description>
@@ -50,39 +72,16 @@ const session = authClient.useSession();
             </Card.Header>
 
             <Card.Content>
-                <Button onclick={async () => {
-                    const { error } = await authClient.requestPasswordReset({
-                                email: $session.data?.user.email || "",
-                                redirectTo: getAuthURL("reset-password", {
-                                    origin: page.url.origin,
-                                    searchParams: {
-                                        callback: page.url.pathname,
-                                        email: $session.data?.user.email || "",
-                                    },
-                                }).toString(),
-                            });
-
-                            if (error) {
-                                toast.error(
-                                    error.message ?? "An error occurred while resetting password.",
-                                    {
-                                        duration: 3000,
-                                    },
-                                );
-                                console.log("Error resetting password:", error);
-                            } else {
-                                toast.success("Password reset email sent. Please check your inbox.", {
-                                    duration: 3000,
-                                });
-                            }
-                }}>Send Reset Link</Button>
-            </Card.Content>         
-        {/if}
-    {:catch error}
+                <SetPassword />
+            </Card.Content>    
+        </Card.Root>
+    {/if}
+{:catch error}
+    <Card.Root class="w-sm max-w-sm mx-auto">
         <Card.Content>
             <p class="text-destructive">
                 Error checking password: {error.message}
             </p>
         </Card.Content>
-    {/await} 
-</Card.Root>
+    </Card.Root>
+{/await} 

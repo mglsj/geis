@@ -7,21 +7,22 @@ CREATE TABLE `profile` (
 	`enrollment_number` text NOT NULL,
 	`roll_number` text NOT NULL,
 	`name` text NOT NULL,
-	`college` text NOT NULL,
+	`college` text,
 	`university` text NOT NULL,
 	`course` text NOT NULL,
-	`specialization` text NOT NULL,
+	`specialization` text,
 	`dob` text NOT NULL,
 	`year_sem` integer NOT NULL,
 	`gender` text NOT NULL,
 	`course_type` text NOT NULL,
-	`branch` text NOT NULL,
+	`branch` text,
 	`official_email` text NOT NULL,
 	`personal_email` text NOT NULL,
 	`mobile` text NOT NULL,
 	`batch` integer NOT NULL,
-	`abc_account` text NOT NULL,
+	`abc_account` text,
 	`address` text NOT NULL,
+	`section` text,
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE set null
 );
 --> statement-breakpoint
@@ -168,6 +169,17 @@ CREATE TABLE `session` (
 --> statement-breakpoint
 CREATE UNIQUE INDEX `session_token_unique` ON `session` (`token`);--> statement-breakpoint
 CREATE INDEX `session_userId_idx` ON `session` (`user_id`);--> statement-breakpoint
+CREATE TABLE `two_factor` (
+	`id` text PRIMARY KEY NOT NULL,
+	`secret` text NOT NULL,
+	`backup_codes` text NOT NULL,
+	`user_id` text NOT NULL,
+	`verified` integer DEFAULT true,
+	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE INDEX `twoFactor_secret_idx` ON `two_factor` (`secret`);--> statement-breakpoint
+CREATE INDEX `twoFactor_userId_idx` ON `two_factor` (`user_id`);--> statement-breakpoint
 CREATE TABLE `user` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
@@ -181,7 +193,9 @@ CREATE TABLE `user` (
 	`ban_reason` text,
 	`ban_expires` integer,
 	`username` text,
-	`display_username` text
+	`display_username` text,
+	`two_factor_enabled` integer DEFAULT false,
+	`profile_id` text NOT NULL
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);--> statement-breakpoint

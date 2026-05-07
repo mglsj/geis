@@ -54,7 +54,7 @@ export const auth = betterAuth({
 	},
 	emailAndPassword: {
 		enabled: true,
-		requireEmailVerification: true,
+		requireEmailVerification: false,
 		revokeSessionsOnPasswordReset: true,
 		sendResetPassword: async ({ user, url, token }) => {
 			await sendResetPasswordEmail({
@@ -64,18 +64,18 @@ export const auth = betterAuth({
 			});
 		},
 	},
-	emailVerification: {
-		sendOnSignUp: true,
-		sendOnSignIn: true,
-		autoSignInAfterVerification: true,
-		sendVerificationEmail: async ({ user, url, token }) => {
-			await sendVerificationEmail({
-				to: user.email,
-				url,
-				token,
-			});
-		},
-	},
+	// emailVerification: {
+	// 	sendOnSignUp: true,
+	// 	sendOnSignIn: true,
+	// 	autoSignInAfterVerification: true,
+	// 	sendVerificationEmail: async ({ user, url, token }) => {
+	// 		await sendVerificationEmail({
+	// 			to: user.email,
+	// 			url,
+	// 			token,
+	// 		});
+	// 	},
+	// },
 	disabledPaths: ["/token"],
 	plugins: [
 		admin(),

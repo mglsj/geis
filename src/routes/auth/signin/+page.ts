@@ -1,6 +1,6 @@
 import type { PageLoad } from "./$types";
 import { superValidate } from "sveltekit-superforms";
-import { formSchema } from "./schema";
+import { signInSchema } from "./schema";
 import { zod4 } from "sveltekit-superforms/adapters";
 
 export const load: PageLoad = async ({ url }) => {
@@ -9,7 +9,7 @@ export const load: PageLoad = async ({ url }) => {
 
 	return {
 		email,
-		form: await superValidate({ username }, zod4(formSchema), {
+		form: await superValidate({ username }, zod4(signInSchema), {
 			errors: false,
 		}),
 	};

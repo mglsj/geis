@@ -42,7 +42,7 @@ async function fetchCaptcha() {
 		if (!response.ok) {
 			console.error("Failed to fetch captcha:", response.statusText);
 			toast.error("Failed to load captcha image. Please try again later.", {
-				duration: 3000,
+				duration: 5 * 1000,
 			});
 			return;
 		}
@@ -75,7 +75,7 @@ async function fetchCaptcha() {
 		toast.error(
 			"An error occurred while loading the captcha. Please try again later.",
 			{
-				duration: 3000,
+				duration: 5 * 1000,
 			},
 		);
 	}
@@ -87,14 +87,13 @@ onMount(async () => {
 
 const form = superForm(defaultForm, {
 	validators: zod4Client(erpLoginFormSchema),
-	resetForm: false,
-	applyAction: false,
+	clearOnSubmit: "none",
 	onResult: async ({ result }) => {
 		if (result.type === "failure" && result.status === 400) {
 			fetchCaptcha();
 		} else if (result.type === "success") {
 			toast.success("ERP verified successfully! Proceeding to sign up...", {
-				duration: 3000,
+				duration: 5 * 1000,
 			});
 			const action = result.data as FormResult<ActionData>;
 			next(action);

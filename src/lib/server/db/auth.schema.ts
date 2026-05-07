@@ -22,6 +22,7 @@ export const user = sqliteTable("user", {
   banExpires: integer("ban_expires", { mode: "timestamp_ms" }),
   username: text("username").unique(),
   displayUsername: text("display_username"),
+  profileId: text("profile_id").notNull(),
 });
 
 export const session = sqliteTable(

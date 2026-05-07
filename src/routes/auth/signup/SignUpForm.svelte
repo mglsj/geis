@@ -22,6 +22,9 @@ import { goto } from "$app/navigation";
 import { toast } from "svelte-sonner";
 import ProfileCard from "$lib/components/ui/ProfileCard.svelte";
 import { Spinner } from "$lib/components/shadcn/spinner";
+import { authClient } from "$lib/client/auth-client";
+import { getAuthURL } from "$lib/helpers/urls";
+import { page } from "$app/state";
 
 interface Props {
 	form: SuperValidated<Infer<SignupFormSchema>>;
@@ -33,16 +36,53 @@ const { form: defaultForm, data = $bindable() }: Props = $props();
 
 const form = superForm(defaultForm, {
 	clearOnSubmit: "none",
+	SPA: true,
 	validators: zod4Client(signupFormSchema),
-	onResult: ({ result }) => {
-		if (result.type === "redirect") {
-			goto(result.location);
-		} else if (result.type === "error") {
-			console.error("Form submission error:", result.error);
-			toast.error("An error occurred during sign up. Please try again.", {
-				duration: 3000,
-			});
-		}
+	onUpdate: async ({ form }) => {
+		if (!form.valid) return;
+
+		await authClient.signUp.email(
+			{
+				email: data?.email || "user@example.com",
+				password: form.data.password,
+				profileId: form.data.profileId, // @ts-ignore
+				callbackURL: form.data.callbackURL,
+			},
+			{
+				onSuccess: () => {
+					goto(
+						getAuthURL("verify", {
+							origin: page.url.origin,
+							searchParams: {
+								toast: "Sign up successful! Please verify your email.",
+								callback: form.data.callbackURL,
+							},
+						}),
+					);
+				},
+				onError: (error) => {
+					form.valid = false;
+
+					console.error("Sign up error:", error);
+					toast.error(error.error.message, {
+						duration: 5 * 1000,
+					});
+
+					switch (error.error.code) {
+						case "PROFILE_NOT_FOUND":
+							form.errors.profileId = [
+								"No profile found with the provided ID. Please contact support.",
+							];
+							break;
+						case "PROFILE_ALREADY_LINKED":
+							form.errors.profileId = [
+								"This profile is already linked to another account.",
+							];
+							break;
+					}
+				},
+			},
+		);
 	},
 });
 

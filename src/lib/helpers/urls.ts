@@ -11,12 +11,15 @@ export function getAuthURL(
 	{
 		origin,
 		searchParams,
-	}: { origin: string; searchParams?: Record<string, string> },
+	}: {
+		origin: string;
+		searchParams?: Record<string, string | null | undefined>;
+	},
 ): URL {
 	const url = new URL(`/auth/${page}`, origin);
 	if (searchParams) {
 		Object.entries(searchParams).forEach(([key, value]) => {
-			url.searchParams.set(key, value);
+			if (value) url.searchParams.set(key, value);
 		});
 	}
 	return url;

@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-export const formSchema = z.object({
+export const resetPasswordSchema = z.object({
 	token: z.string(),
-	password: z.string().min(6),
+	newPassword: z.string().min(6),
 });
 
-export type FormSchema = typeof formSchema;
+export type ResetPasswordType = typeof resetPasswordSchema;

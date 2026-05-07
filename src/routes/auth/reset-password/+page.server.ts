@@ -1,6 +1,6 @@
 import type { PageServerLoad } from "./$types";
 import { superValidate } from "sveltekit-superforms";
-import { formSchema } from "./schema";
+import { resetPasswordSchema } from "./schema";
 import { zod4 } from "sveltekit-superforms/adapters";
 import { redirect } from "@sveltejs/kit";
 import { getAuthURL } from "$lib/helpers/urls";
@@ -24,6 +24,7 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 			origin: url.origin,
 			searchParams: {
 				callback: callback.toString(),
+				email: email,
 				toast: "Invalid or expired token",
 			},
 		});
@@ -33,6 +34,8 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 
 	return {
 		email,
-		form: await superValidate({ token }, zod4(formSchema), { errors: false }),
+		form: await superValidate({ token }, zod4(resetPasswordSchema), {
+			errors: false,
+		}),
 	};
 };

@@ -12,14 +12,15 @@ import {
 	RiLinksLine,
 	RiShieldFill,
 	RiShieldLine,
-	RiUserFill,
-	RiUserLine,
 } from "remixicon-svelte";
 import * as Tabs from "$lib/components/shadcn/tabs";
-import * as Card from "$lib/components/shadcn/card";
-import ProfileUpdateForm from "./ProfileUpdateForm.svelte";
+
 import ProfileCard from "$lib/components/ui/ProfileCard.svelte";
-import { H1 } from "$lib/components/ui/typography";
+import { H1, H2 } from "$lib/components/ui/typography";
+import SecurityTab from "./_components/SecurityTab.svelte";
+import SessionsTab from "./_components/SessionsTab.svelte";
+import AccountsTab from "./_components/AccountsTab.svelte";
+import DangerTab from "./_components/DangerTab.svelte";
 
 const session = authClient.useSession();
 
@@ -82,18 +83,21 @@ let tabValue: string = $state("security");
         </Tabs.Trigger>
     </Tabs.List>
 
-    <Tabs.Content value="security">
-        <p>Security content goes here.</p>
+    <Tabs.Content value="security" class="w-full flex flex-col gap-4">
+        <H2>Security</H2>
+        <SecurityTab />
     </Tabs.Content>
-    <Tabs.Content value="sessions">
-        <p>Sessions content goes here.</p>
+    <Tabs.Content value="sessions" class="w-full flex flex-col gap-4">
+        <H2>Sessions</H2>
+        <SessionsTab />
     </Tabs.Content>
-    <Tabs.Content value="accounts">
-        <p>Accounts content goes here.</p>
+    <Tabs.Content value="accounts" class="w-full flex flex-col gap-4">
+        <H2>Linked Accounts</H2>
+        <AccountsTab />
     </Tabs.Content>
-    <Tabs.Content value="danger">
-        <p>Danger content goes here.</p>
+    <Tabs.Content value="danger" class="w-full flex flex-col gap-4">
+        <H2>Danger Zone</H2>
+        <DangerTab />
     </Tabs.Content>    
   </Tabs.Root>
-
 </main>

@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
-	import RiArrowRightSLine from 'remixicon-svelte/icons/arrow-right-s-line';
-	import { cn } from "$lib/utils.js";
+import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+import RiArrowRightSLine from "remixicon-svelte/icons/arrow-right-s-line";
+import { cn } from "$lib/utils.js";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		inset,
-		children,
-		...restProps
-	}: DropdownMenuPrimitive.SubTriggerProps & {
-		inset?: boolean;
-	} = $props();
+let {
+	ref = $bindable(null),
+	class: className,
+	inset,
+	children,
+	...restProps
+}: DropdownMenuPrimitive.SubTriggerProps & {
+	inset?: boolean;
+} = $props();
 </script>
 
 <DropdownMenuPrimitive.SubTrigger

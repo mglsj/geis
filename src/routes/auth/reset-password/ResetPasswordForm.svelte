@@ -2,7 +2,7 @@
 import * as Form from "$lib/components/shadcn/form";
 import * as InputGroup from "$lib/components/shadcn/input-group";
 import { RiEyeLine, RiEyeOffLine, RiLockPasswordLine } from "remixicon-svelte";
-import { formSchema, type FormSchema } from "./schema";
+import { resetPasswordSchema, type ResetPasswordType } from "./schema";
 import {
 	type SuperValidated,
 	type Infer,
@@ -18,41 +18,42 @@ import { Button } from "$lib/components/shadcn/button";
 import { Spinner } from "$lib/components/shadcn/spinner";
 
 interface Props {
-	form: SuperValidated<Infer<FormSchema>>;
+	form: SuperValidated<Infer<ResetPasswordType>>;
 	callbackURL: string;
 }
 
 const { form: defaultForm, callbackURL }: Props = $props();
 
 const form = superForm(defaultForm, {
-	validators: zod4Client(formSchema),
-	onSubmit: async ({ cancel }) => {
-		cancel();
-		const { data, error } = await authClient.resetPassword({
-			newPassword: $formData.password,
-			token: $formData.token,
+	validators: zod4Client(resetPasswordSchema),
+	SPA: true,
+	onUpdate: async ({ form }) => {
+		if (!form.valid) return;
+
+		await authClient.resetPassword(form.data, {
+			onError: ({ error }) => {
+				form.valid = false;
+				toast.error(
+					error.message ?? "An error occurred while resetting password.",
+					{
+						duration: 3000,
+					},
+				);
+				console.log("Error resetting password:", error);
+			},
+			onSuccess: () => {
+				const redirectTo = getAuthURL("signin", {
+					origin: page.url.origin,
+					searchParams: {
+						callback: callbackURL,
+						toast:
+							"Password reset successful. Please sign in with your new password.",
+					},
+				}).toString();
+
+				goto(redirectTo);
+			},
 		});
-
-		if (error) {
-			toast.error(
-				error.message ?? "An error occurred while resetting password.",
-				{
-					duration: 3000,
-				},
-			);
-			console.log("Error resetting password:", error);
-		} else {
-			const redirectTo = getAuthURL("signin", {
-				origin: page.url.origin,
-				searchParams: {
-					callback: callbackURL,
-					toast:
-						"Password reset successful. Please sign in with your new password.",
-				},
-			}).toString();
-
-			goto(redirectTo);
-		}
 	},
 });
 
@@ -61,10 +62,10 @@ let passwordVisible = $state(false);
 </script>
 
 <form method="POST" use:enhance class="space-y-6">
-	<Form.Field {form} name="password">
+	<Form.Field {form} name="newPassword">
 		<Form.Control>
       {#snippet children({ props })}
-        <Form.Label>Password</Form.Label>
+        <Form.Label>New Password</Form.Label>
 
         <InputGroup.Root>
           <InputGroup.Addon align="inline-start">
@@ -74,8 +75,8 @@ let passwordVisible = $state(false);
             {...props}
             type={passwordVisible ? "text" : "password"}
             autocomplete="new-password"
-            bind:value={$formData.password}
-            {...$constraints.password}
+            bind:value={$formData.newPassword}
+            {...$constraints.newPassword}
         />
 		<InputGroup.Addon align="inline-end">
             <Button class="cursor-pointer" variant="ghost" size="icon" type="button" onclick={() => (passwordVisible = !passwordVisible)}>
@@ -96,11 +97,13 @@ let passwordVisible = $state(false);
   </Form.Field>
   
 {#if $submitting}
-    <Form.Button class="w-full" type="submit" disabled>
+    <Form.Button class="w-full">
 		<Spinner/> Resetting password...
 	</Form.Button>
 {:else}
-	<Form.Button class="w-full cursor-pointer" type="submit">Reset Password</Form.Button>
+	<Form.Button class="w-full cursor-pointer" type="submit">
+		Reset Password
+	</Form.Button>
 {/if}
 
 </form >

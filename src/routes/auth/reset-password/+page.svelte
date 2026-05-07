@@ -1,6 +1,6 @@
 <script lang="ts">
 import * as Card from "$lib/components/shadcn/card";
-import ResetPasswordForm from "./Form.svelte";
+import ResetPasswordForm from "./ResetPasswordForm.svelte";
 
 let { data } = $props();
 

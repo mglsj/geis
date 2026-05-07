@@ -7,7 +7,7 @@ import {
 	RiEyeLine,
 	RiUserLine,
 } from "remixicon-svelte";
-import { formSchema, type FormSchema } from "./schema";
+import { signInSchema, type SignInFormData } from "./schema";
 import {
 	type SuperValidated,
 	type Infer,
@@ -23,7 +23,7 @@ import { page } from "$app/state";
 import { Spinner } from "$lib/components/shadcn/spinner";
 
 interface Props {
-	form: SuperValidated<Infer<FormSchema>>;
+	form: SuperValidated<Infer<SignInFormData>>;
 	callbackURL: string;
 	username?: string;
 }
@@ -35,48 +35,56 @@ let {
 }: Props = $props();
 
 const form = superForm(defaultForm, {
-	validators: zod4Client(formSchema),
-	onSubmit: async ({ cancel }) => {
-		cancel();
-		const { data, error } = await authClient.signIn.username({
-			username: $formData.username,
-			password: $formData.password,
-			rememberMe: true,
-			callbackURL: callbackURL,
-		});
+	validators: zod4Client(signInSchema),
+	clearOnSubmit: "none",
+	SPA: true,
+	onUpdate: async ({ form }) => {
+		if (!form.valid) return;
 
-		if (error) {
-			toast.error(error.message ?? "An error occurred while signing in.", {
-				duration: 3000,
-			});
-			console.log("Error signing in:", error);
+		await authClient.signIn.username(
+			{
+				username: $formData.username,
+				password: $formData.password,
+				rememberMe: true,
+				callbackURL: callbackURL,
+			},
+			{
+				onSuccess: async () => {
+					await goto(callbackURL);
+				},
+				onError: async (error) => {
+					form.valid = false;
 
-			switch (error.code) {
-				case "INVALID_USERNAME_OR_PASSWORD": {
-					form.errors.set({
-						username: ["Invalid username or password"],
-						password: ["Invalid username or password"],
-					});
-					break;
-				}
-				case "EMAIL_NOT_VERIFIED": {
-					const verifyEmailURL = getAuthURL("verify", {
-						origin: page.url.origin,
-						searchParams: {
-							callback: callbackURL,
-							// email: $formData.email,
+					toast.error(
+						error.error.message ?? "An error occurred while signing in.",
+						{
+							duration: 10 * 1000,
 						},
-					});
+					);
+					console.log("Error signing in:", error);
 
-					await goto(verifyEmailURL);
-					break;
-				}
-				case "INVALID_CALLBACK_URL": {
-				}
-			}
-		} else {
-			await goto(callbackURL);
-		}
+					switch (error.error.code) {
+						case "INVALID_USERNAME_OR_PASSWORD": {
+							form.errors.username = ["Invalid username or password"];
+							form.errors.password = ["Invalid username or password"];
+							break;
+						}
+						case "EMAIL_NOT_VERIFIED": {
+							const verifyEmailURL = getAuthURL("verify", {
+								origin: page.url.origin,
+								searchParams: {
+									callback: callbackURL,
+								},
+							});
+
+							console.log("Redirecting to verify email page:", verifyEmailURL);
+
+							return goto(verifyEmailURL);
+						}
+					}
+				},
+			},
+		);
 	},
 });
 

@@ -1,17 +1,14 @@
 import type { Actions, PageServerLoad } from "./$types";
 import { message, superValidate } from "sveltekit-superforms";
-import { erpLoginFormSchema, signupFormSchema } from "./schema";
+import { erpLoginFormSchema } from "./schema";
 import { zod4 } from "sveltekit-superforms/adapters";
-import { redirect, fail, isRedirect } from "@sveltejs/kit";
+import { redirect, fail } from "@sveltejs/kit";
 import { login } from "$lib/server/erp/auth";
 import { fetchAvatar, fetchProfile } from "$lib/server/erp/student";
 import { db } from "$lib/server/db";
 import { profile as profileTable } from "$lib/server/db/schema";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "crypto";
-import { auth } from "$lib/server/auth";
-import { APIError } from "better-auth";
-import { getAuthURL } from "$lib/helpers/urls";
 
 export const load: PageServerLoad = async ({ locals, parent }) => {
 	if (locals.user && locals.session) {
@@ -37,7 +34,8 @@ export const actions = {
 				userId: profileTable.userId,
 			})
 			.from(profileTable)
-			.where(eq(profileTable.studentId, form.data.username));
+			.where(eq(profileTable.studentId, form.data.username))
+			.execute();
 
 		let profileId: string | undefined;
 
@@ -95,7 +93,8 @@ export const actions = {
 					...profile,
 					syncedAt: new Date(),
 				})
-				.where(eq(profileTable.id, profileId));
+				.where(eq(profileTable.id, profileId))
+				.execute();
 
 			if (!result) {
 				return message(form, "Failed to update profile. Please try again.", {
@@ -126,118 +125,5 @@ export const actions = {
 			image: avatar,
 			profileId,
 		};
-	},
-	signup: async ({ request, url }) => {
-		const form = await superValidate(request, zod4(signupFormSchema));
-
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-
-		try {
-			const profileResult = await db
-				.select()
-				.from(profileTable)
-				.where(eq(profileTable.id, form.data.profileId));
-
-			if (!profileResult || profileResult.length === 0) {
-				return message(
-					form,
-					"Profile not found. Please complete ERP login first.",
-					{
-						status: 404,
-					},
-				);
-			}
-
-			const profile = profileResult[0];
-
-			if (profile.userId) {
-				return message(
-					form,
-					"A user account for this profile already exists. Please login instead.",
-					{
-						status: 409,
-					},
-				);
-			}
-
-			const callback = new URL(form.data.callbackURL || "/", url.origin);
-
-			const data = await auth.api.signUpEmail({
-				body: {
-					email: profile.officialEmail,
-					username: profile.studentId,
-					name: profile.name,
-					password: form.data.password,
-					callbackURL: callback.toString(),
-					image: profile.avatar ?? undefined,
-					rememberMe: true,
-				},
-				headers: request.headers,
-			});
-
-			const setUserIdResult = await db
-				.update(profileTable)
-				.set({ userId: data.user.id })
-				.where(eq(profileTable.id, form.data.profileId))
-				.execute();
-
-			if (!setUserIdResult) {
-				await auth.api.deleteUser({
-					body: {
-						token: data.token ?? undefined,
-						password: form.data.password,
-					},
-					headers: request.headers,
-				});
-
-				console.error(
-					"Failed to link profile to user account for profile ID:",
-					form.data.profileId,
-				);
-
-				return message(
-					form,
-					"Failed to link profile to user account. Please contact support.",
-					{
-						status: 500,
-					},
-				);
-			}
-
-			if (!data.user.emailVerified) {
-				const verifyEmailURL = getAuthURL("verify", {
-					origin: url.origin,
-					searchParams: {
-						callback: callback.toString(),
-						email: profile.officialEmail,
-					},
-				});
-				throw redirect(302, verifyEmailURL);
-			} else {
-				throw redirect(302, callback.toString());
-			}
-		} catch (error) {
-			if (isRedirect(error)) {
-				throw error;
-			} else if (error instanceof APIError) {
-				console.error("Better Auth API error during sign up:", error);
-
-				return fail(error.statusCode, {
-					form,
-					message: error.message,
-				});
-			} else {
-				console.error("Error signing up:", error);
-				return message(
-					form,
-					"An unexpected error occurred. Please try again.",
-					{
-						status: 500,
-					},
-				);
-			}
-		}
 	},
 } satisfies Actions;

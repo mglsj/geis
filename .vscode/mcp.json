@@ -7,6 +7,10 @@
 		"better-auth": {
 			"url": "https://mcp.better-auth.com/mcp",
 			"type": "http"
+		},
+		"bun": {
+			"url": "https://bun.com/docs/mcp",
+			"type": "http"
 		}
 	},
 	"inputs": []

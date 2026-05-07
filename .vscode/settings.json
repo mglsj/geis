@@ -2,13 +2,4 @@
 	"files.associations": {
 		"*.css": "tailwindcss"
 	},
-	"sqltools.useNodeRuntime": true,
-	"sqltools.connections": [
-		{
-			"previewLimit": 50,
-			"driver": "SQLite",
-			"database": "${workspaceFolder:geis}/local.db",
-			"name": "Local GEIS"
-		}
-	]
 }

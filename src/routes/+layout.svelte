@@ -36,6 +36,6 @@ onMount(() => {
 </div>
 
 <svelte:head>
-	<title>GEIS</title>
-	<meta name="description" content="A student profile management system." />
+	<title>Geis</title>
+	<meta name="description" content="A student profile management system built with SvelteKit and Supabase." />
 </svelte:head>

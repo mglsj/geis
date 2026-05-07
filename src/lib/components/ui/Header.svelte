@@ -18,18 +18,13 @@ let showLogoutDialog = $state(false);
 <header class="p-4 border-b">
     <nav class="flex flex-row items-center justify-between">
         <div class="flex w-0 grow flex-row items-center gap-4">
-            <Large>
-                <span class="block md:hidden">GEIS</span>
-                <span class="hidden md:block">Graphic Era Identity Service</span>
-            </Large>
+            <a href="/">
+                <Large>
+                    <span class="block md:hidden">GEIS</span>
+                    <span class="hidden md:block">Graphic Era Identity Service</span>
+                </Large>
+            </a>
         </div>
-
-        <!-- <div class="flex flex-[2_1_0%] flex-row items-center justify-center gap-4">
-            <Large>
-                <span class="block md:hidden">GEIS</span>
-                <span class="hidden md:block">Graphic Era Identity Service</span>
-            </Large>
-        </div> -->
         
         <div class="flex w-0 flex-1 flex-row items-center justify-end gap-4">
             {#if $session.data}
@@ -46,6 +41,10 @@ let showLogoutDialog = $state(false);
                         
                         <DropdownMenu.Item onclick={() => goto("/settings")}>
                             Settings
+                        </DropdownMenu.Item>
+
+                        <DropdownMenu.Item onclick={() => goto("/developer")}>
+                            Developer
                         </DropdownMenu.Item>
 
                         <DropdownMenu.Separator />

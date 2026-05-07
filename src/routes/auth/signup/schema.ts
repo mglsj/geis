@@ -11,7 +11,7 @@ export type ErpLoginFormSchema = typeof erpLoginFormSchema;
 
 export const signupFormSchema = z.object({
 	password: z.string().min(6),
-	profileId: z.uuidv4(),
+	profileId: z.string(),
 	callbackURL: z.url().optional(),
 });
 

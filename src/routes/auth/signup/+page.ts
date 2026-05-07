@@ -11,12 +11,5 @@ export const load: PageLoad = async ({ parent, url }) => {
 		loginForm: await superValidate({ username }, zod4(erpLoginFormSchema), {
 			errors: false,
 		}),
-		signupForm: await superValidate(
-			{ callbackURL: callback.toString() },
-			zod4(signupFormSchema),
-			{
-				errors: false,
-			},
-		),
 	};
 };

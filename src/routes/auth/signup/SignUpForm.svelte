@@ -8,14 +8,15 @@ import {
 	RiEyeLine,
 } from "remixicon-svelte";
 import { signupFormSchema, type SignupFormSchema } from "./schema";
-import {
+import SuperDebug, {
 	type SuperValidated,
 	type Infer,
 	superForm,
 	type FormResult,
+	defaults,
 } from "sveltekit-superforms";
 import * as Field from "$lib/components/shadcn/field";
-import { zod4Client } from "sveltekit-superforms/adapters";
+import { zod4, zod4Client } from "sveltekit-superforms/adapters";
 import { Button } from "$lib/components/shadcn/button";
 import type { ActionData } from "./$types";
 import { goto } from "$app/navigation";
@@ -27,75 +28,74 @@ import { getAuthURL } from "$lib/helpers/urls";
 import { page } from "$app/state";
 
 interface Props {
-	form: SuperValidated<Infer<SignupFormSchema>>;
-	data: FormResult<ActionData> | null;
+	data: FormResult<ActionData>;
+	callback: string;
 }
 
-const { form: defaultForm, data = $bindable() }: Props = $props();
+const { data, callback }: Props = $props();
 
-const form = superForm(defaultForm, {
-	clearOnSubmit: "none",
-	SPA: true,
-	validators: zod4Client(signupFormSchema),
-	onUpdate: async ({ form }) => {
-		if (!form.valid) return;
+const form = superForm(
+	defaults(
+		{
+			profileId: data.profileId!,
+			callbackURL: callback,
+		},
+		zod4(signupFormSchema),
+	),
+	{
+		clearOnSubmit: "none",
+		SPA: true,
+		validators: zod4Client(signupFormSchema),
+		onUpdate: async ({ form }) => {
+			if (!form.valid) return;
 
-		await authClient.signUp.email(
-			{
-				email: data?.email || "user@example.com",
-				name: data?.name || "User",
-				password: form.data.password,
-				profileId: form.data.profileId,
-				callbackURL: form.data.callbackURL,
-			},
-			{
-				onSuccess: () => {
-					goto(
-						getAuthURL("verify", {
-							origin: page.url.origin,
-							searchParams: {
-								toast: "Sign up successful! Please verify your email.",
-								email: data?.email,
-								callback: form.data.callbackURL,
-							},
-						}),
-					);
+			await authClient.signUp.email(
+				{
+					email: data?.email || "user@example.com",
+					name: data?.name || "User",
+					password: form.data.password,
+					profileId: form.data.profileId,
+					callbackURL: form.data.callbackURL,
 				},
-				onError: (error) => {
-					form.valid = false;
+				{
+					onSuccess: () => {
+						goto(
+							getAuthURL("verify", {
+								origin: page.url.origin,
+								searchParams: {
+									toast: "Sign up successful! Please verify your email.",
+									email: data?.email,
+									callback: form.data.callbackURL,
+								},
+							}),
+						);
+					},
+					onError: (error) => {
+						form.valid = false;
 
-					console.error("Sign up error:", error);
-					toast.error(error.error.message, {
-						duration: 5 * 1000,
-					});
+						console.error("Sign up error:", error);
+						toast.error(error.error.message, {
+							duration: 5 * 1000,
+						});
 
-					switch (error.error.code) {
-						case "PROFILE_NOT_FOUND":
-							form.errors.profileId = [
-								"No profile found with the provided ID. Please contact support.",
-							];
-							break;
-						case "PROFILE_ALREADY_LINKED":
-							form.errors.profileId = [
-								"This profile is already linked to another account.",
-							];
-							break;
-					}
+						switch (error.error.code) {
+							case "PROFILE_NOT_FOUND":
+								form.errors.profileId = [
+									"No profile found with the provided ID. Please contact support.",
+								];
+								break;
+							case "PROFILE_ALREADY_LINKED":
+								form.errors.profileId = [
+									"This profile is already linked to another account.",
+								];
+								break;
+						}
+					},
 				},
-			},
-		);
+			);
+		},
 	},
-});
-
-$effect(() => {
-	const id = data?.profileId;
-	if (!id) return;
-
-	// Race condition fix
-	setTimeout(() => {
-		$formData.profileId = id;
-	}, 100);
-});
+);
 
 const { form: formData, enhance, constraints, submitting } = form;
 

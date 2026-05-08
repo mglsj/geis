@@ -27,7 +27,7 @@ const createClientSchema = z.object({
 	redirect_uris: z
 		.array(z.url())
 		.min(1, "At least one redirect URI is required"),
-	scope: z.array(z.string()).optional().default(null),
+	scope: z.array(z.string()).optional().default([]),
 	client_name: z.string().min(1, "Client name is required"),
 	client_uri: z.url().optional(),
 	logo_uri: z.url().optional(),

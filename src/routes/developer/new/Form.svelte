@@ -27,7 +27,7 @@ const createClientSchema = z.object({
 	redirect_uris: z
 		.array(z.url())
 		.min(1, "At least one redirect URI is required"),
-	scope: z.array(z.string()),
+	scope: z.array(z.string()).optional().default(null),
 	client_name: z.string().min(1, "Client name is required"),
 	client_uri: z.url().optional(),
 	logo_uri: z.url().optional(),
@@ -40,7 +40,8 @@ const createClientSchema = z.object({
 	post_logout_redirect_uris: z.array(z.url()).optional(),
 	token_endpoint_auth_method: z
 		.enum(["none", "client_secret_basic", "client_secret_post"])
-		.optional(),
+		.optional()
+		.default(null),
 	grant_types: z
 		.array(
 			z.enum(["authorization_code", "client_credentials", "refresh_token"]),

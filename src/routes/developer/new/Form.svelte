@@ -19,6 +19,7 @@ import {
 	type TagsInputProps,
 } from "$lib/components/shadcn/tags-input";
 import type { OAuthClient } from "@better-auth/oauth-provider";
+import * as RadioGroup from "$lib/components/shadcn/radio-group";
 
 // Client Schema according to RFC7591
 // https://datatracker.ietf.org/doc/html/rfc7591
@@ -272,6 +273,30 @@ const scopeValidate: TagsInputProps["validate"] = (val, tags) => {
             {/snippet}
             </Form.Control>
             <Form.Description>(Optional) List of scopes the client can request.</Form.Description>
+            <Form.FieldErrors />
+        </Form.Field>
+
+        <Form.Field {form} name="token_endpoint_auth_method">
+            <Form.Control>
+            {#snippet children({ props })}
+                <Form.Label>Token Endpoint Auth Method</Form.Label>
+                <RadioGroup.Root bind:value={$formData.token_endpoint_auth_method} {...props}>
+                    <div class="flex items-center space-x-2">
+                        <RadioGroup.Item value="none" id="r1" />
+                        <Form.Label for="r1">None</Form.Label>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <RadioGroup.Item value="client_secret_post" id="r2" />
+                        <Form.Label for="r2">Client Secret Post</Form.Label>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <RadioGroup.Item value="client_secret_basic" id="r3" />
+                        <Form.Label for="r3">Client Secret Basic</Form.Label>
+                    </div>
+                </RadioGroup.Root>
+            {/snippet}
+            </Form.Control>
+            <Form.Description>(Optional) Authentication method for token endpoint.</Form.Description>
             <Form.FieldErrors />
         </Form.Field>
 
